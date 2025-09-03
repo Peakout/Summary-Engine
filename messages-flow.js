@@ -101,11 +101,8 @@ class WebflowMessagesFlow {
         // Each tab is independent - we can animate multiple tabs simultaneously
         // No need to wait for other tabs to complete
         
-        // Only start animation if tab is actually visible
-        if (!this.isTabVisible(tabNumber)) {
-            console.log('WebflowMessagesFlow: Tab not visible, not starting animation');
-            return;
-        }
+        // Tab visibility is handled by the tab switching logic
+        // We don't need to check visibility here since tabs.js calls us when tab is active
         
         const tabPane = this.tabsContainer.querySelector(`[summary-engine="tab-${tabNumber}"]`);
         if (!tabPane) {
