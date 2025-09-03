@@ -368,6 +368,37 @@ class WebflowMessagesFlow {
     setWindowOpen(isOpen) {
         this.windowIsOpen = isOpen;
         console.log('WebflowMessagesFlow: Window state set to:', isOpen);
+        
+        // If window is closing, hide all messages immediately
+        if (!isOpen) {
+            this.hideAllMessagesImmediately();
+        }
+    }
+    
+    // Hide all messages immediately (no animation)
+    hideAllMessagesImmediately() {
+        console.log('WebflowMessagesFlow: Hiding all messages immediately');
+        
+        // Hide all messages across all tabs
+        this.tabPanes.forEach(tabPane => {
+            const tabNumber = tabPane.getAttribute('summary-engine').replace('tab-', '');
+            const messages = tabPane.querySelectorAll(`[summary-engine^="tab-${tabNumber}-message-"]`);
+            
+            messages.forEach(message => {
+                const dots = message.querySelector('.summary-engine_message-dots');
+                const text = message.querySelector('.summary-engine_company-message-text');
+                
+                if (dots) {
+                    dots.style.display = 'flex';
+                    dots.style.opacity = '1';
+                }
+                if (text) {
+                    text.style.display = 'none';
+                    text.style.opacity = '0';
+                }
+                message.style.display = 'none';
+            });
+        });
     }
 }
 
