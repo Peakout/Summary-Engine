@@ -38,22 +38,28 @@ class WebflowMessagesFlowWithQuestions {
         
         allTabPanes.forEach(tabPane => {
             const tabNumber = tabPane.getAttribute('summary-engine').replace('tab-', '');
-            console.log('WebflowMessagesFlowWithQuestions: Processing tab:', tabNumber);
+            const tabType = tabPane.getAttribute('summary-tab');
+            console.log('WebflowMessagesFlowWithQuestions: Processing tab:', tabNumber, 'Type:', tabType);
             
-            const messages = tabPane.querySelectorAll(`[summary-engine^="tab-${tabNumber}-message-"]`);
-            console.log('WebflowMessagesFlowWithQuestions: Found messages for tab', tabNumber, ':', messages.length);
-            
-            messages.forEach(message => {
-                const dots = message.querySelector('.summary-engine_message-dots');
-                const text = message.querySelector('.summary-engine_company-message-text');
+            // Only hide messages for dynamic tabs (tabs that will have animations)
+            if (tabType === 'dynamic') {
+                const messages = tabPane.querySelectorAll(`[summary-engine^="tab-${tabNumber}-message-"]`);
+                console.log('WebflowMessagesFlowWithQuestions: Found messages for tab', tabNumber, ':', messages.length);
                 
-                if (dots) dots.style.display = 'flex';
-                if (text) text.style.display = 'none';
-                message.style.display = 'none';
-            });
-            
-            // Hide all questions and answers initially
-            this.hideAllQuestionsAndAnswers(tabPane, tabNumber);
+                messages.forEach(message => {
+                    const dots = message.querySelector('.summary-engine_message-dots');
+                    const text = message.querySelector('.summary-engine_company-message-text');
+                    
+                    if (dots) dots.style.display = 'flex';
+                    if (text) text.style.display = 'none';
+                    message.style.display = 'none';
+                });
+                
+                // Hide all questions and answers initially
+                this.hideAllQuestionsAndAnswers(tabPane, tabNumber);
+            } else {
+                console.log('WebflowMessagesFlowWithQuestions: Tab', tabNumber, 'is static, leaving content visible');
+            }
         });
         console.log('WebflowMessagesFlowWithQuestions: All messages hidden initially');
     }
@@ -534,6 +540,6 @@ class WebflowMessagesFlowWithQuestions {
 // Auto-initialize when DOM is ready
 document.addEventListener('DOMContentLoaded', () => {
     if (document.querySelector('[summary-engine="tabs"]')) {
-        window.webflowMessagesFlowWithQuestions = new WebflowMessagesFlowWithQuestions();
+        window.webflowMessagesFlow = new WebflowMessagesFlowWithQuestions();
     }
 });
