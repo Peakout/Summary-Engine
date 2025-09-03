@@ -23,8 +23,7 @@ class WebflowMessagesFlow {
         };
         
         // State tracking
-        this.isAnimating = false;
-        this.currentTab = null;
+        this.animatingTabs = new Set(); // Track which tabs are currently animating
         this.completedTabs = new Set(); // Track which tabs have completed their flow
         this.lastCallTime = 0; // For debouncing
         this.windowIsOpen = false; // Track window state
@@ -86,21 +85,21 @@ class WebflowMessagesFlow {
         // If this tab is already completed, show all messages immediately
         if (this.completedTabs.has(tabNumber)) {
             console.log('WebflowMessagesFlow: Tab already completed, showing all messages');
-            this.showAllMessages(tabNumber);
+            const tabPane = this.tabsContainer.querySelector(`[summary-engine="tab-${tabNumber}"]`);
+            if (tabPane) {
+                this.showAllMessages(tabPane);
+            }
             return;
         }
         
         // If we're already animating this tab, don't interrupt
-        if (this.isAnimating && this.currentTab === tabNumber) {
+        if (this.animatingTabs.has(tabNumber)) {
             console.log('WebflowMessagesFlow: Already animating this tab, not interrupting');
             return;
         }
         
-        // If we're animating a different tab, let it finish
-        if (this.isAnimating && this.currentTab !== tabNumber) {
-            console.log('WebflowMessagesFlow: Animating different tab, waiting for completion');
-            return;
-        }
+        // Each tab is independent - we can animate multiple tabs simultaneously
+        // No need to wait for other tabs to complete
         
         // Only start animation if tab is actually visible
         if (!this.isTabVisible(tabNumber)) {
@@ -135,22 +134,17 @@ class WebflowMessagesFlow {
         }
         
         // If switching to a different tab, just stop current animation
-        if (this.currentTab && this.currentTab !== tabNumber) {
-            console.log('WebflowMessagesFlow: Switching tabs, stopping current animation');
-            // Don't delete from completedTabs - keep the completed state
-        }
+        // Each tab is independent - no need to stop other tabs
         
         // Dynamic tab - show messages with animation
         console.log('WebflowMessagesFlow: Dynamic tab, starting animation flow');
-        console.log('WebflowMessagesFlow: Current tab before:', this.currentTab, 'New tab:', tabNumber);
-        this.currentTab = tabNumber;
-        this.isAnimating = true;
+        this.animatingTabs.add(tabNumber);
         
         // Hide all messages initially
         this.hideAllMessages(tabPane);
         
         // Start the flow
-        this.startFlow(tabPane);
+        this.startFlow(tabPane, tabNumber);
     }
     
     // Show static content immediately
@@ -205,28 +199,27 @@ class WebflowMessagesFlow {
     }
     
     // Start the message flow
-    startFlow(tabPane) {
-        const tabNumber = tabPane.getAttribute('summary-engine').replace('tab-', '');
+    startFlow(tabPane, tabNumber) {
         const messages = tabPane.querySelectorAll(`[summary-engine^="tab-${tabNumber}-message-"]`);
         console.log('WebflowMessagesFlow: Starting flow with messages:', messages.length);
         
         if (messages.length === 0) {
             console.log('WebflowMessagesFlow: No messages found, ending flow');
-            this.isAnimating = false;
+            this.animatingTabs.delete(tabNumber);
             return;
         }
         
         // Start with first message
-        this.showMessageWithFlow(tabPane, messages, 0);
+        this.showMessageWithFlow(tabPane, messages, 0, tabNumber);
     }
     
     // Show message with dots animation flow
-    showMessageWithFlow(tabPane, messages, messageIndex) {
+    showMessageWithFlow(tabPane, messages, messageIndex, tabNumber) {
         if (messageIndex >= messages.length) {
             // All messages shown, show questions if they exist
             this.showQuestions(tabPane);
-            this.completedTabs.add(this.currentTab);
-            this.isAnimating = false;
+            this.completedTabs.add(tabNumber);
+            this.animatingTabs.delete(tabNumber);
             return;
         }
         
@@ -237,7 +230,7 @@ class WebflowMessagesFlow {
             // Then show the message
             this.showMessage(currentMessage, () => {
                 // Move to next message
-                this.showMessageWithFlow(tabPane, messages, messageIndex + 1);
+                this.showMessageWithFlow(tabPane, messages, messageIndex + 1, tabNumber);
             });
         });
     }
@@ -361,19 +354,19 @@ class WebflowMessagesFlow {
     
     // Check if currently animating
     isCurrentlyAnimating() {
-        return this.isAnimating;
+        return this.animatingTabs.size > 0;
     }
     
-    // Get current tab
-    getCurrentTab() {
-        return this.currentTab;
+    // Get current animating tabs
+    getAnimatingTabs() {
+        return Array.from(this.animatingTabs);
     }
     
     // Reset completed tabs (call when window is closed)
     resetCompletedTabs() {
         this.completedTabs.clear();
+        this.animatingTabs.clear();
         this.windowIsOpen = false;
-        this.isAnimating = false;
         console.log('WebflowMessagesFlow: Reset completed tabs and window state');
     }
     
