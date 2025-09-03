@@ -38,9 +38,14 @@ class WebflowMessagesFlow {
     // Initialize all tabs by hiding all messages
     initializeAllTabs() {
         const allTabPanes = this.tabsContainer.querySelectorAll('[summary-engine^="tab-"]');
+        console.log('WebflowMessagesFlow: Found tab panes:', allTabPanes.length);
+        
         allTabPanes.forEach(tabPane => {
             const tabNumber = tabPane.getAttribute('summary-engine').replace('tab-', '');
             const messages = tabPane.querySelectorAll(`[summary-engine^="tab-${tabNumber}-message-"]`);
+            const tabType = tabPane.getAttribute('summary-tab');
+            
+            console.log(`WebflowMessagesFlow: Tab ${tabNumber} - Type: ${tabType}, Messages: ${messages.length}`);
             
             messages.forEach(message => {
                 message.style.display = 'none';
