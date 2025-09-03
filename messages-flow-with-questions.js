@@ -350,6 +350,18 @@ class WebflowMessagesFlowWithQuestions {
             return;
         }
         
+        console.log('🔍 [DEBUG] showQuestionsWithoutHandlers for tab:', tabNumber, 'at', new Date().toISOString());
+        console.log('🔍 [DEBUG] Questions container position:', questionsContainer.parentNode);
+        
+        // Move questions container to the end (after all answers)
+        const tabContent = tabPane.querySelector('.summary-engine_tab-pane-content');
+        if (tabContent && questionsContainer.parentNode === tabContent) {
+            // Remove from current position
+            questionsContainer.remove();
+            // Append to end
+            tabContent.appendChild(questionsContainer);
+        }
+        
         // Hide used questions and show only remaining ones
         const allQuestions = questionsContainer.querySelectorAll(`[summary-engine^="tab-${tabNumber}-tag-"]`);
         allQuestions.forEach(question => {
