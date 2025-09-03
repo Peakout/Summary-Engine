@@ -54,20 +54,25 @@ class WebflowMessagesFlowWithQuestions {
     
     // Hide all questions and answers for a tab
     hideAllQuestionsAndAnswers(tabPane, tabNumber) {
+        console.log('WebflowMessagesFlowWithQuestions: Hiding all questions and answers for tab:', tabNumber);
+        
         // Hide questions container
         const questionsContainer = tabPane.querySelector(`[summary-engine="tab-${tabNumber}-tags"]`);
         if (questionsContainer) {
             questionsContainer.style.display = 'none';
+            console.log('WebflowMessagesFlowWithQuestions: Hidden questions container');
         }
         
         // Hide all client questions
         const clientQuestions = tabPane.querySelectorAll(`[summary-engine^="tab-${tabNumber}-tag-"][summary-engine$="-questions"]`);
+        console.log('WebflowMessagesFlowWithQuestions: Found client questions:', clientQuestions.length);
         clientQuestions.forEach(element => {
             element.style.display = 'none';
         });
         
         // Hide all answers
         const answers = tabPane.querySelectorAll(`[summary-engine^="tab-${tabNumber}-tag-"][summary-engine$="-answer"]`);
+        console.log('WebflowMessagesFlowWithQuestions: Found answers:', answers.length);
         answers.forEach(element => {
             element.style.display = 'none';
         });
