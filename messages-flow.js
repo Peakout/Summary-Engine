@@ -35,7 +35,12 @@ class WebflowMessagesFlow {
     
     // Main method to start messages flow for a tab
     startMessagesFlow(tabNumber) {
-        if (this.isAnimating) return;
+        console.log('WebflowMessagesFlow: startMessagesFlow called for tab:', tabNumber);
+        
+        if (this.isAnimating) {
+            console.log('WebflowMessagesFlow: Already animating, skipping');
+            return;
+        }
         
         const tabPane = this.tabsContainer.querySelector(`[summary-engine="tab-${tabNumber}"]`);
         if (!tabPane) {
@@ -45,14 +50,17 @@ class WebflowMessagesFlow {
         
         // Check if tab is dynamic or static
         const tabType = tabPane.getAttribute('summary-tab');
+        console.log('WebflowMessagesFlow: Tab type:', tabType);
         
         if (tabType === 'static') {
             // Static tab - show content immediately
+            console.log('WebflowMessagesFlow: Static tab, showing content immediately');
             this.showStaticContent(tabPane);
             return;
         }
         
         // Dynamic tab - show messages with animation
+        console.log('WebflowMessagesFlow: Dynamic tab, starting animation flow');
         this.currentTab = tabNumber;
         this.isAnimating = true;
         
@@ -75,7 +83,8 @@ class WebflowMessagesFlow {
     
     // Hide all messages in a tab
     hideAllMessages(tabPane) {
-        const messages = tabPane.querySelectorAll('[summary-engine^="tab-1-message-"]');
+        const messages = tabPane.querySelectorAll(`[summary-engine^="tab-${this.currentTab}-message-"]`);
+        console.log('WebflowMessagesFlow: Hiding messages:', messages.length);
         messages.forEach(message => {
             message.style.display = 'none';
             message.style.opacity = '0';
@@ -86,8 +95,10 @@ class WebflowMessagesFlow {
     // Start the message flow
     startFlow(tabPane) {
         const messages = tabPane.querySelectorAll(`[summary-engine^="tab-${this.currentTab}-message-"]`);
+        console.log('WebflowMessagesFlow: Starting flow with messages:', messages.length);
         
         if (messages.length === 0) {
+            console.log('WebflowMessagesFlow: No messages found, ending flow');
             this.isAnimating = false;
             return;
         }
