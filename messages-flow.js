@@ -93,15 +93,21 @@ class WebflowMessagesFlow {
     showAllMessages(tabPane) {
         const messages = tabPane.querySelectorAll(`[summary-engine^="tab-${this.currentTab}-message-"]`);
         messages.forEach(message => {
-            message.style.display = 'block';
-            message.style.opacity = '1';
-            message.style.transform = 'translateY(0)';
+            // Remove all flow classes and add visible
+            message.classList.remove('flow-hidden', 'flow-animating');
+            message.classList.add('flow-visible');
             
             // Hide dots and show text in each message
             const dotsElement = message.querySelector('.summary-engine_message-dots');
             const textElement = message.querySelector('.summary-engine_company-message-text');
-            if (dotsElement) dotsElement.style.display = 'none';
-            if (textElement) textElement.style.display = 'block';
+            if (dotsElement) {
+                dotsElement.classList.remove('flow-visible');
+                dotsElement.classList.add('flow-hidden');
+            }
+            if (textElement) {
+                textElement.classList.remove('flow-hidden', 'flow-animating');
+                textElement.classList.add('flow-visible');
+            }
         });
     }
     
@@ -110,9 +116,9 @@ class WebflowMessagesFlow {
         const messages = tabPane.querySelectorAll(`[summary-engine^="tab-${this.currentTab}-message-"]`);
         console.log('WebflowMessagesFlow: Hiding messages:', messages.length);
         messages.forEach(message => {
-            message.style.display = 'none';
-            message.style.opacity = '0';
-            message.style.transform = 'translateY(10px)';
+            // Remove all flow classes and add hidden
+            message.classList.remove('flow-visible', 'flow-animating');
+            message.classList.add('flow-hidden');
         });
     }
     
@@ -159,26 +165,26 @@ class WebflowMessagesFlow {
         const textElement = currentMessage.querySelector('.summary-engine_company-message-text');
         
         if (dotsElement && textElement) {
-            // Show the message container
-            currentMessage.style.display = 'block';
-            currentMessage.style.opacity = '0';
-            currentMessage.style.transform = 'translateY(10px)';
-            currentMessage.style.transition = 'all 0.4s ease-out';
+            // Show the message container with animation
+            currentMessage.classList.remove('flow-hidden');
+            currentMessage.classList.add('flow-animating');
             
             // Show dots, hide text
-            dotsElement.style.display = 'flex';
-            dotsElement.style.opacity = '1';
-            textElement.style.display = 'none';
+            dotsElement.classList.remove('flow-hidden');
+            dotsElement.classList.add('flow-visible');
+            textElement.classList.remove('flow-visible');
+            textElement.classList.add('flow-hidden');
             
             // Animate message container in
             requestAnimationFrame(() => {
-                currentMessage.style.opacity = '1';
-                currentMessage.style.transform = 'translateY(0)';
+                currentMessage.classList.remove('flow-animating');
+                currentMessage.classList.add('flow-visible');
             });
             
             // Hide dots after animation duration
             setTimeout(() => {
-                dotsElement.style.display = 'none';
+                dotsElement.classList.remove('flow-visible');
+                dotsElement.classList.add('flow-hidden');
                 if (callback) callback();
             }, this.config.typingDuration);
         } else {
@@ -230,17 +236,17 @@ class WebflowMessagesFlow {
         const textElement = messageElement.querySelector('.summary-engine_company-message-text');
         
         if (dotsElement && textElement) {
-            // Hide dots, show text
-            dotsElement.style.display = 'none';
-            textElement.style.display = 'block';
-            textElement.style.opacity = '0';
-            textElement.style.transform = 'translateY(10px)';
-            textElement.style.transition = 'all 0.4s ease-out';
+            // Hide dots, show text with animation
+            dotsElement.classList.remove('flow-visible');
+            dotsElement.classList.add('flow-hidden');
+            
+            textElement.classList.remove('flow-hidden');
+            textElement.classList.add('flow-animating');
             
             // Animate text in
             requestAnimationFrame(() => {
-                textElement.style.opacity = '1';
-                textElement.style.transform = 'translateY(0)';
+                textElement.classList.remove('flow-animating');
+                textElement.classList.add('flow-visible');
             });
         }
         
