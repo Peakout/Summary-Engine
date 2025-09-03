@@ -67,9 +67,9 @@ class WebflowMessagesFlow {
     startMessagesFlow(tabNumber) {
         console.log('WebflowMessagesFlow: startMessagesFlow called for tab:', tabNumber);
         
-        if (this.isAnimating && this.currentTab === tabNumber) {
-            console.log('WebflowMessagesFlow: Already animating this tab, skipping');
-            return;
+        if (this.isAnimating) {
+            console.log('WebflowMessagesFlow: Already animating, stopping current animation');
+            this.isAnimating = false; // Stop current animation
         }
         
         const tabPane = this.tabsContainer.querySelector(`[summary-engine="tab-${tabNumber}"]`);
@@ -96,6 +96,12 @@ class WebflowMessagesFlow {
             console.log('WebflowMessagesFlow: Tab already completed, showing all messages');
             this.showAllMessages(tabPane);
             return;
+        }
+        
+        // If switching to a different tab, reset the current tab state
+        if (this.currentTab && this.currentTab !== tabNumber) {
+            console.log('WebflowMessagesFlow: Switching tabs, resetting previous tab');
+            this.completedTabs.delete(this.currentTab); // Allow previous tab to animate again
         }
         
         // Dynamic tab - show messages with animation
