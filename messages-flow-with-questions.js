@@ -32,10 +32,16 @@ class WebflowMessagesFlowWithQuestions {
     
     // Hide all messages initially
     initializeAllTabs() {
-        const allTabPanes = this.tabsContainer.querySelectorAll('[summary-engine^="tab-"]');
+        // Only select actual tab panes (tab-1, tab-2, tab-3), not individual elements
+        const allTabPanes = this.tabsContainer.querySelectorAll('[summary-engine="tab-1"], [summary-engine="tab-2"], [summary-engine="tab-3"]');
+        console.log('WebflowMessagesFlowWithQuestions: Found tab panes:', allTabPanes.length);
+        
         allTabPanes.forEach(tabPane => {
             const tabNumber = tabPane.getAttribute('summary-engine').replace('tab-', '');
+            console.log('WebflowMessagesFlowWithQuestions: Processing tab:', tabNumber);
+            
             const messages = tabPane.querySelectorAll(`[summary-engine^="tab-${tabNumber}-message-"]`);
+            console.log('WebflowMessagesFlowWithQuestions: Found messages for tab', tabNumber, ':', messages.length);
             
             messages.forEach(message => {
                 const dots = message.querySelector('.summary-engine_message-dots');
