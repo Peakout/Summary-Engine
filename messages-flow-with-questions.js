@@ -350,18 +350,25 @@ class WebflowMessagesFlowWithQuestions {
             return;
         }
         
+        // Hide used questions and show only remaining ones
+        const allQuestions = questionsContainer.querySelectorAll(`[summary-engine^="tab-${tabNumber}-tag-"]`);
+        allQuestions.forEach(question => {
+            const questionAttribute = question.getAttribute('summary-engine');
+            if (this.usedQuestions.has(questionAttribute)) {
+                question.style.display = 'none';
+            } else {
+                question.style.display = 'block';
+                // Re-add click handler
+                question.addEventListener('click', () => {
+                    this.handleQuestionClick(tabPane, question, tabNumber);
+                });
+            }
+        });
+        
         // Show questions container
         questionsContainer.style.display = 'flex';
         questionsContainer.style.opacity = '1';
         questionsContainer.style.transform = 'translateY(0)';
-        
-        // Add click handlers to questions
-        const questions = questionsContainer.querySelectorAll(`[summary-engine^="tab-${tabNumber}-tag-"]`);
-        questions.forEach(question => {
-            question.addEventListener('click', () => {
-                this.handleQuestionClick(tabPane, question, tabNumber);
-            });
-        });
     }
     
     // Handle question click
