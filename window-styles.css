@@ -1,0 +1,30 @@
+/**
+ * Webflow Window Component Styles
+ * Handles button rotation and ensures Webflow hover effects work
+ */
+
+/* Main button rotation when open */
+[summary-engine="main-button"].is-open {
+    transform: rotate(135deg) !important;
+}
+
+/* Ensure Webflow hover effects work by using !important sparingly */
+[summary-engine="main-button"] {
+    transition: transform 0.3s ease !important;
+}
+
+/* Override any inline styles that might conflict with Webflow hover */
+[summary-engine="main-button"]:hover {
+    /* Let Webflow handle hover styles */
+    /* Only override transform if needed */
+}
+
+/* Window animation classes */
+[summary-engine="window"] {
+    transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+/* Ensure smooth transitions */
+[summary-engine="main-button"] * {
+    transition: inherit;
+}
