@@ -369,11 +369,6 @@ class WebflowMessagesFlow {
     setWindowOpen(isOpen) {
         this.windowIsOpen = isOpen;
         console.log('WebflowMessagesFlow: Window state set to:', isOpen);
-        
-        // If window is closing, hide all messages immediately
-        if (!isOpen && this.tabsContainer) {
-            this.hideAllMessagesImmediately();
-        }
     }
     
     // Hide all messages immediately (no animation)
