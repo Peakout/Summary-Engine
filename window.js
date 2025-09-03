@@ -139,10 +139,7 @@ class WebflowWindow {
             this.window.style.transform = 'translateY(20px) scale(0.95)';
             this.isAnimating = false;
             
-            // Reset messages flow when window is closed
-            if (window.webflowMessagesFlow) {
-                window.webflowMessagesFlow.resetCompletedTabs();
-            }
+            // Don't reset messages flow - keep completed state for session
         }, 200);
     }
     
