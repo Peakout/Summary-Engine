@@ -138,6 +138,11 @@ class WebflowWindow {
             this.window.style.opacity = '0';
             this.window.style.transform = 'translateY(20px) scale(0.95)';
             this.isAnimating = false;
+            
+            // Reset messages flow when window is closed
+            if (window.webflowMessagesFlow) {
+                window.webflowMessagesFlow.resetCompletedTabs();
+            }
         }, 200);
     }
     
