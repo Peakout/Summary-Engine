@@ -27,6 +27,7 @@ class WebflowMessagesFlow {
         this.currentTab = null;
         this.completedTabs = new Set(); // Track which tabs have completed their flow
         this.lastCallTime = 0; // For debouncing
+        this.windowIsOpen = false; // Track window state
         
         this.init();
     }
@@ -68,6 +69,12 @@ class WebflowMessagesFlow {
     startMessagesFlow(tabNumber) {
         const now = Date.now();
         console.log('WebflowMessagesFlow: startMessagesFlow called for tab:', tabNumber);
+        
+        // Don't start if window is not open
+        if (!this.windowIsOpen) {
+            console.log('WebflowMessagesFlow: Window not open, skipping');
+            return;
+        }
         
         // Debounce rapid calls (within 100ms)
         if (now - this.lastCallTime < 100) {
@@ -352,7 +359,15 @@ class WebflowMessagesFlow {
     // Reset completed tabs (call when window is closed)
     resetCompletedTabs() {
         this.completedTabs.clear();
-        console.log('WebflowMessagesFlow: Reset completed tabs');
+        this.windowIsOpen = false;
+        this.isAnimating = false;
+        console.log('WebflowMessagesFlow: Reset completed tabs and window state');
+    }
+    
+    // Set window open state
+    setWindowOpen(isOpen) {
+        this.windowIsOpen = isOpen;
+        console.log('WebflowMessagesFlow: Window state set to:', isOpen);
     }
 }
 
