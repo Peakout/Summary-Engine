@@ -460,10 +460,10 @@ class WebflowMessagesFlowWithQuestions {
             </div>
         `;
         
-        // Insert before questions container
-        const questionsContainer = tabPane.querySelector(`[summary-engine="tab-${tabNumber}-tags"]`);
-        if (questionsContainer) {
-            questionsContainer.parentNode.insertBefore(typingIndicator, questionsContainer);
+        // Insert after the last message (before any questions/answers)
+        const lastMessage = tabPane.querySelector(`[summary-engine^="tab-${tabNumber}-message-"]:last-of-type`);
+        if (lastMessage) {
+            lastMessage.parentNode.insertBefore(typingIndicator, lastMessage.nextSibling);
         } else {
             // Find the tab content container
             const tabContent = tabPane.querySelector('.summary-engine_tab-pane-content');
@@ -531,13 +531,18 @@ class WebflowMessagesFlowWithQuestions {
             return;
         }
         
-        // Clear container and add only remaining questions
-        questionsContainer.innerHTML = '';
-        remainingQuestions.forEach(question => {
-            questionsContainer.appendChild(question);
-            question.addEventListener('click', () => {
-                this.handleQuestionClick(tabPane, question, tabNumber);
-            });
+        // Hide used questions instead of clearing the container
+        allQuestions.forEach(question => {
+            const questionAttribute = question.getAttribute('summary-engine');
+            if (this.usedQuestions.has(questionAttribute)) {
+                question.style.display = 'none';
+            } else {
+                question.style.display = 'block';
+                // Re-add click handler
+                question.addEventListener('click', () => {
+                    this.handleQuestionClick(tabPane, question, tabNumber);
+                });
+            }
         });
         
         // Show questions container
