@@ -124,10 +124,9 @@ class WebflowWindow {
         this.isAnimating = true;
         this.isOpen = false;
         
-        // Set window as closed in messages flow and hide messages immediately
+        // Set window as closed in messages flow
         if (window.webflowMessagesFlow) {
             window.webflowMessagesFlow.setWindowOpen(false);
-            window.webflowMessagesFlow.hideAllMessagesImmediately();
         }
         
         // Animate button rotation back using class
