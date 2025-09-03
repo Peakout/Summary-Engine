@@ -500,19 +500,64 @@ class WebflowMessagesFlowWithQuestions {
         
         console.log('WebflowMessagesFlowWithQuestions: Showing answer for:', questionAttribute);
         
-        // Show answer
-        answerElement.style.display = 'block';
-        answerElement.style.opacity = '0';
-        answerElement.style.transform = 'translateY(10px)';
-        answerElement.style.transition = 'all 0.4s ease-out';
+        // Show answer with dots animation first
+        const dotsElement = answerElement.querySelector('.summary-engine_message-dots');
+        const textElement = answerElement.querySelector('.summary-engine_company-message-text');
         
-        requestAnimationFrame(() => {
-            answerElement.style.opacity = '1';
-            answerElement.style.transform = 'translateY(0)';
-        });
-        
-        if (callback) {
-            setTimeout(callback, 400);
+        if (dotsElement && textElement) {
+            // Show answer container
+            answerElement.style.display = 'block';
+            
+            // Show dots, hide text
+            dotsElement.style.display = 'flex';
+            dotsElement.style.opacity = '1';
+            textElement.style.display = 'none';
+            textElement.style.opacity = '0';
+            
+            // Start dots animation
+            const dots = dotsElement.querySelectorAll('.summary-engine_message-dot');
+            dots.forEach((dot, index) => {
+                dot.style.animation = `typing 1.5s infinite ${index * 0.2}s`;
+            });
+            
+            // Hide dots and show text after animation
+            setTimeout(() => {
+                dots.forEach(dot => {
+                    dot.style.animation = 'none';
+                });
+                
+                // Hide dots, show text
+                dotsElement.style.display = 'none';
+                textElement.style.display = 'block';
+                textElement.style.opacity = '0';
+                textElement.style.transform = 'translateY(10px)';
+                textElement.style.transition = 'all 0.4s ease-out';
+                
+                // Animate text in
+                requestAnimationFrame(() => {
+                    textElement.style.opacity = '1';
+                    textElement.style.transform = 'translateY(0)';
+                });
+                
+                if (callback) {
+                    setTimeout(callback, this.config.messageAnimationDuration);
+                }
+            }, this.config.typingDuration);
+        } else {
+            // Fallback if no dots structure
+            answerElement.style.display = 'block';
+            answerElement.style.opacity = '0';
+            answerElement.style.transform = 'translateY(10px)';
+            answerElement.style.transition = 'all 0.4s ease-out';
+            
+            requestAnimationFrame(() => {
+                answerElement.style.opacity = '1';
+                answerElement.style.transform = 'translateY(0)';
+            });
+            
+            if (callback) {
+                setTimeout(callback, 400);
+            }
         }
     }
     
@@ -544,6 +589,15 @@ class WebflowMessagesFlowWithQuestions {
                 });
             }
         });
+        
+        // Move questions container to the end (after all answers)
+        const tabContent = tabPane.querySelector('.summary-engine_tab-pane-content');
+        if (tabContent && questionsContainer.parentNode === tabContent) {
+            // Remove from current position
+            questionsContainer.remove();
+            // Append to end
+            tabContent.appendChild(questionsContainer);
+        }
         
         // Show questions container
         questionsContainer.style.display = 'flex';
