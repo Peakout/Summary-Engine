@@ -432,6 +432,15 @@ class WebflowMessagesFlowWithQuestions {
             }
         }
         
+        // Move client question to the end (after all previous questions/answers)
+        const tabContent = tabPane.querySelector('.summary-engine_tab-pane-content');
+        if (tabContent && clientQuestion.parentNode === tabContent) {
+            // Remove from current position
+            clientQuestion.remove();
+            // Append to end
+            tabContent.appendChild(clientQuestion);
+        }
+        
         // Show client question
         clientQuestion.style.display = 'block';
         clientQuestion.style.opacity = '0';
@@ -509,6 +518,15 @@ class WebflowMessagesFlowWithQuestions {
         }
         
         console.log('WebflowMessagesFlowWithQuestions: Showing answer for:', questionAttribute);
+        
+        // Move answer to the end (after all previous questions/answers)
+        const tabContent = tabPane.querySelector('.summary-engine_tab-pane-content');
+        if (tabContent && answerElement.parentNode === tabContent) {
+            // Remove from current position
+            answerElement.remove();
+            // Append to end
+            tabContent.appendChild(answerElement);
+        }
         
         // Show answer with dots animation first
         const dotsElement = answerElement.querySelector('.summary-engine_message-dots');
