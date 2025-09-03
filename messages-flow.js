@@ -26,7 +26,6 @@ class WebflowMessagesFlow {
         this.isAnimating = false;
         this.currentTab = null;
         this.completedTabs = new Set(); // Track which tabs have completed their flow
-        this.windowHasBeenOpened = false; // Track if window has been opened before
         
         this.init();
     }
@@ -85,13 +84,6 @@ class WebflowMessagesFlow {
             return;
         }
         
-        // Check if window has been opened before
-        if (this.windowHasBeenOpened) {
-            console.log('WebflowMessagesFlow: Window already opened before, showing all messages');
-            this.showAllMessages(tabPane);
-            return;
-        }
-        
         // Check if this tab has already completed its flow
         if (this.completedTabs.has(tabNumber)) {
             console.log('WebflowMessagesFlow: Tab already completed, showing all messages');
@@ -103,7 +95,6 @@ class WebflowMessagesFlow {
         console.log('WebflowMessagesFlow: Dynamic tab, starting animation flow');
         this.currentTab = tabNumber;
         this.isAnimating = true;
-        this.windowHasBeenOpened = true; // Mark window as opened
         
         // Hide all messages initially
         this.hideAllMessages(tabPane);
@@ -316,8 +307,7 @@ class WebflowMessagesFlow {
     // Reset completed tabs (call when window is closed)
     resetCompletedTabs() {
         this.completedTabs.clear();
-        this.windowHasBeenOpened = false; // Reset window opened state
-        console.log('WebflowMessagesFlow: Reset completed tabs and window state');
+        console.log('WebflowMessagesFlow: Reset completed tabs');
     }
 }
 
