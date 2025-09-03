@@ -521,6 +521,9 @@ class WebflowMessagesFlowWithQuestions {
         const dotsElement = answerElement.querySelector('.summary-engine_message-dots');
         const textElement = answerElement.querySelector('.summary-engine_company-message-text');
         
+        console.log('WebflowMessagesFlowWithQuestions: Dots element found:', dotsElement);
+        console.log('WebflowMessagesFlowWithQuestions: Text element found:', textElement);
+        
         if (dotsElement && textElement) {
             // Show answer container
             answerElement.style.display = 'block';
@@ -533,7 +536,9 @@ class WebflowMessagesFlowWithQuestions {
             
             // Start dots animation
             const dots = dotsElement.querySelectorAll('.summary-engine_message-dot');
+            console.log('WebflowMessagesFlowWithQuestions: Found dots:', dots.length);
             dots.forEach((dot, index) => {
+                console.log('WebflowMessagesFlowWithQuestions: Applying animation to dot', index + 1);
                 dot.style.animation = `typing 1.5s infinite ${index * 0.2}s`;
             });
             
