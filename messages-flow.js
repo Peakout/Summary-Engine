@@ -126,7 +126,8 @@ class WebflowMessagesFlow {
     
     // Show static content immediately
     showStaticContent(tabPane) {
-        const messages = tabPane.querySelectorAll(`[summary-engine^="tab-${this.currentTab}-message-"]`);
+        const tabNumber = tabPane.getAttribute('summary-engine').replace('tab-', '');
+        const messages = tabPane.querySelectorAll(`[summary-engine^="tab-${tabNumber}-message-"]`);
         messages.forEach(message => {
             message.style.display = 'block';
             message.style.opacity = '1';
@@ -136,8 +137,9 @@ class WebflowMessagesFlow {
     
     // Show all messages immediately (for completed tabs)
     showAllMessages(tabPane) {
-        console.log('WebflowMessagesFlow: showAllMessages called for tab:', this.currentTab);
-        const messages = tabPane.querySelectorAll(`[summary-engine^="tab-${this.currentTab}-message-"]`);
+        const tabNumber = tabPane.getAttribute('summary-engine').replace('tab-', '');
+        console.log('WebflowMessagesFlow: showAllMessages called for tab:', tabNumber);
+        const messages = tabPane.querySelectorAll(`[summary-engine^="tab-${tabNumber}-message-"]`);
         console.log('WebflowMessagesFlow: Showing', messages.length, 'messages');
         
         messages.forEach((message, index) => {
@@ -162,7 +164,8 @@ class WebflowMessagesFlow {
     
     // Hide all messages in a tab
     hideAllMessages(tabPane) {
-        const messages = tabPane.querySelectorAll(`[summary-engine^="tab-${this.currentTab}-message-"]`);
+        const tabNumber = tabPane.getAttribute('summary-engine').replace('tab-', '');
+        const messages = tabPane.querySelectorAll(`[summary-engine^="tab-${tabNumber}-message-"]`);
         console.log('WebflowMessagesFlow: Hiding messages:', messages.length);
         messages.forEach((message, index) => {
             console.log(`WebflowMessagesFlow: Hiding message ${index + 1}`);
@@ -174,7 +177,8 @@ class WebflowMessagesFlow {
     
     // Start the message flow
     startFlow(tabPane) {
-        const messages = tabPane.querySelectorAll(`[summary-engine^="tab-${this.currentTab}-message-"]`);
+        const tabNumber = tabPane.getAttribute('summary-engine').replace('tab-', '');
+        const messages = tabPane.querySelectorAll(`[summary-engine^="tab-${tabNumber}-message-"]`);
         console.log('WebflowMessagesFlow: Starting flow with messages:', messages.length);
         
         if (messages.length === 0) {
