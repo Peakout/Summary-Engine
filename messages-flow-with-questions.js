@@ -474,18 +474,12 @@ class WebflowMessagesFlowWithQuestions {
             </div>
         `;
         
-        // Insert after the last message (before any questions/answers)
-        const lastMessage = tabPane.querySelector(`[summary-engine^="tab-${tabNumber}-message-"]:last-of-type`);
-        if (lastMessage) {
-            lastMessage.parentNode.insertBefore(typingIndicator, lastMessage.nextSibling);
+        // Insert at the end of the tab content (after all existing elements)
+        const tabContent = tabPane.querySelector('.summary-engine_tab-pane-content');
+        if (tabContent) {
+            tabContent.appendChild(typingIndicator);
         } else {
-            // Find the tab content container
-            const tabContent = tabPane.querySelector('.summary-engine_tab-pane-content');
-            if (tabContent) {
-                tabContent.appendChild(typingIndicator);
-            } else {
-                tabPane.appendChild(typingIndicator);
-            }
+            tabPane.appendChild(typingIndicator);
         }
         
         // Start dots animation
