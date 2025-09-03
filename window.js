@@ -106,8 +106,9 @@ class WebflowWindow {
             setTimeout(() => {
                 this.isAnimating = false;
                 
-                // Start messages flow for the first tab if available
+                // Set window as open in messages flow
                 if (window.webflowMessagesFlow) {
+                    window.webflowMessagesFlow.setWindowOpen(true);
                     console.log('WebflowWindow: Starting messages flow for tab 1');
                     window.webflowMessagesFlow.startTabMessages('1');
                 } else {
@@ -122,6 +123,11 @@ class WebflowWindow {
         
         this.isAnimating = true;
         this.isOpen = false;
+        
+        // Set window as closed in messages flow
+        if (window.webflowMessagesFlow) {
+            window.webflowMessagesFlow.setWindowOpen(false);
+        }
         
         // Animate button rotation back using class
         this.mainButton.classList.remove('is-open');
