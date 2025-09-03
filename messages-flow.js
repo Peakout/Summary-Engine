@@ -62,8 +62,8 @@ class WebflowMessagesFlow {
     startMessagesFlow(tabNumber) {
         console.log('WebflowMessagesFlow: startMessagesFlow called for tab:', tabNumber);
         
-        if (this.isAnimating) {
-            console.log('WebflowMessagesFlow: Already animating, skipping');
+        if (this.isAnimating && this.currentTab === tabNumber) {
+            console.log('WebflowMessagesFlow: Already animating this tab, skipping');
             return;
         }
         
@@ -76,6 +76,8 @@ class WebflowMessagesFlow {
         // Check if tab is dynamic or static
         const tabType = tabPane.getAttribute('summary-tab');
         console.log('WebflowMessagesFlow: Tab type:', tabType);
+        console.log('WebflowMessagesFlow: Tab pane found:', !!tabPane);
+        console.log('WebflowMessagesFlow: Tab number:', tabNumber);
         
         if (tabType === 'static') {
             // Static tab - show content immediately
