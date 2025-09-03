@@ -102,9 +102,17 @@ class WebflowWindow {
             this.window.style.opacity = '1';
             this.window.style.transform = 'translateY(0) scale(1)';
             
-            // Reset animation flag
+            // Reset animation flag and start initial messages flow
             setTimeout(() => {
                 this.isAnimating = false;
+                
+                // Start messages flow for the first tab if available
+                if (window.webflowMessagesFlow) {
+                    console.log('WebflowWindow: Starting messages flow for tab 1');
+                    window.webflowMessagesFlow.startTabMessages('1');
+                } else {
+                    console.log('WebflowWindow: Messages flow not available');
+                }
             }, 300);
         });
     }
