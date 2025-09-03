@@ -26,6 +26,7 @@ class WebflowMessagesFlow {
         this.isAnimating = false;
         this.currentTab = null;
         this.completedTabs = new Set(); // Track which tabs have completed their flow
+        this.lastCallTime = 0; // For debouncing
         
         this.init();
     }
@@ -65,7 +66,15 @@ class WebflowMessagesFlow {
     
     // Main method to start messages flow for a tab
     startMessagesFlow(tabNumber) {
+        const now = Date.now();
         console.log('WebflowMessagesFlow: startMessagesFlow called for tab:', tabNumber);
+        
+        // Debounce rapid calls (within 100ms)
+        if (now - this.lastCallTime < 100) {
+            console.log('WebflowMessagesFlow: Debouncing rapid calls');
+            return;
+        }
+        this.lastCallTime = now;
         
         if (this.isAnimating) {
             console.log('WebflowMessagesFlow: Already animating, stopping current animation');
