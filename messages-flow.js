@@ -98,10 +98,10 @@ class WebflowMessagesFlow {
             return;
         }
         
-        // If switching to a different tab, reset the current tab state
+        // If switching to a different tab, just stop current animation
         if (this.currentTab && this.currentTab !== tabNumber) {
-            console.log('WebflowMessagesFlow: Switching tabs, resetting previous tab');
-            this.completedTabs.delete(this.currentTab); // Allow previous tab to animate again
+            console.log('WebflowMessagesFlow: Switching tabs, stopping current animation');
+            // Don't delete from completedTabs - keep the completed state
         }
         
         // Dynamic tab - show messages with animation
