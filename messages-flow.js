@@ -20,6 +20,7 @@ class WebflowMessagesFlow {
         this.completedTabs = new Set();
         this.lastCallTime = 0;
         this.windowIsOpen = false;
+
         
         this.init();
     }
@@ -171,6 +172,7 @@ class WebflowMessagesFlow {
     // Show message with dots animation flow
     showMessageWithFlow(tabPane, messages, messageIndex, tabNumber) {
         if (messageIndex >= messages.length) {
+            // All messages shown, mark as completed
             this.completedTabs.add(tabNumber);
             this.animatingTabs.delete(tabNumber);
             return;
@@ -243,6 +245,8 @@ class WebflowMessagesFlow {
             setTimeout(callback, this.config.messageAnimationDuration);
         }
     }
+    
+
     
     // Public methods
     startTabMessages(tabNumber) {
