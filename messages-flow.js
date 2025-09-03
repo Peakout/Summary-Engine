@@ -113,6 +113,7 @@ class WebflowMessagesFlow {
         
         // Dynamic tab - show messages with animation
         console.log('WebflowMessagesFlow: Dynamic tab, starting animation flow');
+        console.log('WebflowMessagesFlow: Current tab before:', this.currentTab, 'New tab:', tabNumber);
         this.currentTab = tabNumber;
         this.isAnimating = true;
         
@@ -135,8 +136,12 @@ class WebflowMessagesFlow {
     
     // Show all messages immediately (for completed tabs)
     showAllMessages(tabPane) {
+        console.log('WebflowMessagesFlow: showAllMessages called for tab:', this.currentTab);
         const messages = tabPane.querySelectorAll(`[summary-engine^="tab-${this.currentTab}-message-"]`);
-        messages.forEach(message => {
+        console.log('WebflowMessagesFlow: Showing', messages.length, 'messages');
+        
+        messages.forEach((message, index) => {
+            console.log(`WebflowMessagesFlow: Showing message ${index + 1}`);
             message.style.display = 'block';
             message.style.opacity = '1';
             message.style.transform = 'translateY(0)';
@@ -144,8 +149,14 @@ class WebflowMessagesFlow {
             // Hide dots and show text in each message
             const dotsElement = message.querySelector('.summary-engine_message-dots');
             const textElement = message.querySelector('.summary-engine_company-message-text');
-            if (dotsElement) dotsElement.style.display = 'none';
-            if (textElement) textElement.style.display = 'block';
+            if (dotsElement) {
+                dotsElement.style.display = 'none';
+                console.log(`WebflowMessagesFlow: Hiding dots in message ${index + 1}`);
+            }
+            if (textElement) {
+                textElement.style.display = 'block';
+                console.log(`WebflowMessagesFlow: Showing text in message ${index + 1}`);
+            }
         });
     }
     
@@ -153,7 +164,8 @@ class WebflowMessagesFlow {
     hideAllMessages(tabPane) {
         const messages = tabPane.querySelectorAll(`[summary-engine^="tab-${this.currentTab}-message-"]`);
         console.log('WebflowMessagesFlow: Hiding messages:', messages.length);
-        messages.forEach(message => {
+        messages.forEach((message, index) => {
+            console.log(`WebflowMessagesFlow: Hiding message ${index + 1}`);
             message.style.display = 'none';
             message.style.opacity = '0';
             message.style.transform = 'translateY(10px)';
