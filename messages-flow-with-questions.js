@@ -282,7 +282,7 @@ class WebflowMessagesFlowWithQuestions {
             return;
         }
         
-        const questions = questionsContainer.querySelectorAll(`[summary-engine^="tab-${tabNumber}-tag-"][summary-engine$="-tag-"]`);
+        const questions = questionsContainer.querySelectorAll(`[summary-engine^="tab-${tabNumber}-tag-"]`);
         if (questions.length === 0) {
             console.log('WebflowMessagesFlowWithQuestions: No questions found for tab:', tabNumber);
             this.completedTabs.add(tabNumber);
@@ -464,7 +464,7 @@ class WebflowMessagesFlowWithQuestions {
         const questionsContainer = tabPane.querySelector(`[summary-engine="tab-${tabNumber}-tags"]`);
         if (!questionsContainer) return;
         
-        const allQuestions = questionsContainer.querySelectorAll(`[summary-engine^="tab-${tabNumber}-tag-"][summary-engine$="-tag-"]`);
+        const allQuestions = questionsContainer.querySelectorAll(`[summary-engine^="tab-${tabNumber}-tag-"]`);
         const remainingQuestions = Array.from(allQuestions).filter(q => 
             !this.usedQuestions.has(q.getAttribute('summary-engine'))
         );
