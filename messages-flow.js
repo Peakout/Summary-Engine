@@ -26,12 +26,37 @@ class WebflowMessagesFlow {
         this.isAnimating = false;
         this.currentTab = null;
         this.completedTabs = new Set(); // Track which tabs have completed their flow
+        this.windowHasBeenOpened = false; // Track if window has been opened before
         
         this.init();
     }
     
     init() {
         console.log('WebflowMessagesFlow initialized');
+        this.initializeAllTabs();
+    }
+    
+    // Initialize all tabs by hiding all messages
+    initializeAllTabs() {
+        const allTabPanes = this.tabsContainer.querySelectorAll('[summary-engine^="tab-"]');
+        allTabPanes.forEach(tabPane => {
+            const tabNumber = tabPane.getAttribute('summary-engine').replace('tab-', '');
+            const messages = tabPane.querySelectorAll(`[summary-engine^="tab-${tabNumber}-message-"]`);
+            
+            messages.forEach(message => {
+                message.style.display = 'none';
+                message.style.opacity = '0';
+                message.style.transform = 'translateY(10px)';
+                
+                // Hide dots and text initially
+                const dotsElement = message.querySelector('.summary-engine_message-dots');
+                const textElement = message.querySelector('.summary-engine_company-message-text');
+                if (dotsElement) dotsElement.style.display = 'none';
+                if (textElement) textElement.style.display = 'none';
+            });
+        });
+        
+        console.log('WebflowMessagesFlow: All messages hidden initially');
     }
     
     // Main method to start messages flow for a tab
@@ -60,6 +85,13 @@ class WebflowMessagesFlow {
             return;
         }
         
+        // Check if window has been opened before
+        if (this.windowHasBeenOpened) {
+            console.log('WebflowMessagesFlow: Window already opened before, showing all messages');
+            this.showAllMessages(tabPane);
+            return;
+        }
+        
         // Check if this tab has already completed its flow
         if (this.completedTabs.has(tabNumber)) {
             console.log('WebflowMessagesFlow: Tab already completed, showing all messages');
@@ -71,6 +103,7 @@ class WebflowMessagesFlow {
         console.log('WebflowMessagesFlow: Dynamic tab, starting animation flow');
         this.currentTab = tabNumber;
         this.isAnimating = true;
+        this.windowHasBeenOpened = true; // Mark window as opened
         
         // Hide all messages initially
         this.hideAllMessages(tabPane);
@@ -283,7 +316,8 @@ class WebflowMessagesFlow {
     // Reset completed tabs (call when window is closed)
     resetCompletedTabs() {
         this.completedTabs.clear();
-        console.log('WebflowMessagesFlow: Reset completed tabs');
+        this.windowHasBeenOpened = false; // Reset window opened state
+        console.log('WebflowMessagesFlow: Reset completed tabs and window state');
     }
 }
 
