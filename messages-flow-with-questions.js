@@ -441,19 +441,14 @@ class WebflowMessagesFlowWithQuestions {
             tabContent.appendChild(clientQuestion);
         }
         
-        // Show client question
+        // Show client question immediately
         clientQuestion.style.display = 'block';
-        clientQuestion.style.opacity = '0';
-        clientQuestion.style.transform = 'translateY(10px)';
-        clientQuestion.style.transition = 'all 0.4s ease-out';
-        
-        requestAnimationFrame(() => {
-            clientQuestion.style.opacity = '1';
-            clientQuestion.style.transform = 'translateY(0)';
-        });
+        clientQuestion.style.opacity = '1';
+        clientQuestion.style.transform = 'translateY(0)';
         
         if (callback) {
-            setTimeout(callback, 400);
+            // Call callback immediately - no delay needed
+            callback();
         }
     }
     
