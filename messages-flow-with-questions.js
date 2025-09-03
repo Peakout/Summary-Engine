@@ -422,6 +422,16 @@ class WebflowMessagesFlowWithQuestions {
         
         console.log('WebflowMessagesFlowWithQuestions: Showing client question:', questionAttribute);
         
+        // Get the original question text from the clicked tag
+        const originalQuestion = tabPane.querySelector(`[summary-engine="${questionAttribute}"]`);
+        if (originalQuestion) {
+            const questionText = originalQuestion.textContent.trim();
+            const clientQuestionText = clientQuestion.querySelector('.summary-engine_client-message-text');
+            if (clientQuestionText) {
+                clientQuestionText.textContent = questionText;
+            }
+        }
+        
         // Show client question
         clientQuestion.style.display = 'block';
         clientQuestion.style.opacity = '0';
