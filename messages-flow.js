@@ -70,6 +70,13 @@ class WebflowMessagesFlow {
         if (this.isAnimating) {
             console.log('WebflowMessagesFlow: Already animating, stopping current animation');
             this.isAnimating = false; // Stop current animation
+            
+            // If we're switching to a different tab, mark the previous tab as completed
+            // so it doesn't restart from scratch
+            if (this.currentTab && this.currentTab !== tabNumber) {
+                console.log('WebflowMessagesFlow: Marking interrupted tab as completed');
+                this.completedTabs.add(this.currentTab);
+            }
         }
         
         const tabPane = this.tabsContainer.querySelector(`[summary-engine="tab-${tabNumber}"]`);
