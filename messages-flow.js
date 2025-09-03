@@ -83,17 +83,29 @@ class WebflowMessagesFlow {
         }
         this.lastCallTime = now;
         
-        if (this.isAnimating) {
-            console.log('WebflowMessagesFlow: Already animating, stopping current animation');
-            
-            // If we're switching to a different tab, mark the previous tab as completed
-            // so it doesn't restart from scratch
-            if (this.currentTab && this.currentTab !== tabNumber) {
-                console.log('WebflowMessagesFlow: Marking interrupted tab as completed');
-                this.completedTabs.add(this.currentTab);
-            }
-            
-            this.isAnimating = false; // Stop current animation
+        // If this tab is already completed, show all messages immediately
+        if (this.completedTabs.has(tabNumber)) {
+            console.log('WebflowMessagesFlow: Tab already completed, showing all messages');
+            this.showAllMessages(tabNumber);
+            return;
+        }
+        
+        // If we're already animating this tab, don't interrupt
+        if (this.isAnimating && this.currentTab === tabNumber) {
+            console.log('WebflowMessagesFlow: Already animating this tab, not interrupting');
+            return;
+        }
+        
+        // If we're animating a different tab, let it finish
+        if (this.isAnimating && this.currentTab !== tabNumber) {
+            console.log('WebflowMessagesFlow: Animating different tab, waiting for completion');
+            return;
+        }
+        
+        // Only start animation if tab is actually visible
+        if (!this.isTabVisible(tabNumber)) {
+            console.log('WebflowMessagesFlow: Tab not visible, not starting animation');
+            return;
         }
         
         const tabPane = this.tabsContainer.querySelector(`[summary-engine="tab-${tabNumber}"]`);
@@ -369,6 +381,15 @@ class WebflowMessagesFlow {
     setWindowOpen(isOpen) {
         this.windowIsOpen = isOpen;
         console.log('WebflowMessagesFlow: Window state set to:', isOpen);
+    }
+    
+    // Check if a tab is currently visible
+    isTabVisible(tabNumber) {
+        const tabPane = this.tabsContainer.querySelector(`[summary-engine="tab-${tabNumber}"]`);
+        if (!tabPane) return false;
+        
+        const style = window.getComputedStyle(tabPane);
+        return style.display !== 'none' && style.opacity !== '0';
     }
     
     // Hide all messages immediately (no animation)
