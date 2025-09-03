@@ -463,9 +463,15 @@ class WebflowMessagesFlowWithQuestions {
         // Insert before questions container
         const questionsContainer = tabPane.querySelector(`[summary-engine="tab-${tabNumber}-tags"]`);
         if (questionsContainer) {
-            tabPane.insertBefore(typingIndicator, questionsContainer);
+            questionsContainer.parentNode.insertBefore(typingIndicator, questionsContainer);
         } else {
-            tabPane.appendChild(typingIndicator);
+            // Find the tab content container
+            const tabContent = tabPane.querySelector('.summary-engine_tab-pane-content');
+            if (tabContent) {
+                tabContent.appendChild(typingIndicator);
+            } else {
+                tabPane.appendChild(typingIndicator);
+            }
         }
         
         // Start dots animation
