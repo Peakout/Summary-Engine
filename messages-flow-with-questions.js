@@ -517,70 +517,13 @@ class WebflowMessagesFlowWithQuestions {
             tabContent.appendChild(answerElement);
         }
         
-        // Show answer with dots animation first
-        const dotsElement = answerElement.querySelector('.summary-engine_message-dots');
-        const textElement = answerElement.querySelector('.summary-engine_company-message-text');
-        
-        console.log('WebflowMessagesFlowWithQuestions: Dots element found:', dotsElement);
-        console.log('WebflowMessagesFlowWithQuestions: Text element found:', textElement);
-        
-        if (dotsElement && textElement) {
-            // Show answer container
-            answerElement.style.display = 'block';
-            
-            // Show dots, hide text
-            dotsElement.style.display = 'flex';
-            dotsElement.style.opacity = '1';
-            textElement.style.display = 'none';
-            textElement.style.opacity = '0';
-            
-            // Start dots animation
-            const dots = dotsElement.querySelectorAll('.summary-engine_message-dot');
-            console.log('WebflowMessagesFlowWithQuestions: Found dots:', dots.length);
-            dots.forEach((dot, index) => {
-                console.log('WebflowMessagesFlowWithQuestions: Applying animation to dot', index + 1);
-                dot.style.animation = `typing 1.5s infinite ${index * 0.2}s`;
+        // Use the same logic as regular messages - show dots animation first
+        this.showDotsAnimation(answerElement, () => {
+            // Then show the message
+            this.showMessage(answerElement, () => {
+                if (callback) callback();
             });
-            
-            // Hide dots and show text after animation
-            setTimeout(() => {
-                dots.forEach(dot => {
-                    dot.style.animation = 'none';
-                });
-                
-                // Hide dots, show text
-                dotsElement.style.display = 'none';
-                textElement.style.display = 'block';
-                textElement.style.opacity = '0';
-                textElement.style.transform = 'translateY(10px)';
-                textElement.style.transition = 'all 0.4s ease-out';
-                
-                // Animate text in
-                requestAnimationFrame(() => {
-                    textElement.style.opacity = '1';
-                    textElement.style.transform = 'translateY(0)';
-                });
-                
-                if (callback) {
-                    setTimeout(callback, this.config.messageAnimationDuration);
-                }
-            }, this.config.typingDuration);
-        } else {
-            // Fallback if no dots structure
-            answerElement.style.display = 'block';
-            answerElement.style.opacity = '0';
-            answerElement.style.transform = 'translateY(10px)';
-            answerElement.style.transition = 'all 0.4s ease-out';
-            
-            requestAnimationFrame(() => {
-                answerElement.style.opacity = '1';
-                answerElement.style.transform = 'translateY(0)';
-            });
-            
-            if (callback) {
-                setTimeout(callback, 400);
-            }
-        }
+        });
     }
     
     // Show remaining questions
