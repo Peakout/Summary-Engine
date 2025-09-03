@@ -25,6 +25,7 @@ class WebflowMessagesFlow {
         // State tracking
         this.isAnimating = false;
         this.currentTab = null;
+        this.completedTabs = new Set(); // Track which tabs have completed their flow
         
         this.init();
     }
@@ -59,6 +60,13 @@ class WebflowMessagesFlow {
             return;
         }
         
+        // Check if this tab has already completed its flow
+        if (this.completedTabs.has(tabNumber)) {
+            console.log('WebflowMessagesFlow: Tab already completed, showing all messages');
+            this.showAllMessages(tabPane);
+            return;
+        }
+        
         // Dynamic tab - show messages with animation
         console.log('WebflowMessagesFlow: Dynamic tab, starting animation flow');
         this.currentTab = tabNumber;
@@ -73,11 +81,27 @@ class WebflowMessagesFlow {
     
     // Show static content immediately
     showStaticContent(tabPane) {
-        const messages = tabPane.querySelectorAll('[summary-engine^="tab-1-message-"]');
+        const messages = tabPane.querySelectorAll(`[summary-engine^="tab-${this.currentTab}-message-"]`);
         messages.forEach(message => {
             message.style.display = 'block';
             message.style.opacity = '1';
             message.style.transform = 'translateY(0)';
+        });
+    }
+    
+    // Show all messages immediately (for completed tabs)
+    showAllMessages(tabPane) {
+        const messages = tabPane.querySelectorAll(`[summary-engine^="tab-${this.currentTab}-message-"]`);
+        messages.forEach(message => {
+            message.style.display = 'block';
+            message.style.opacity = '1';
+            message.style.transform = 'translateY(0)';
+            
+            // Hide dots and show text in each message
+            const dotsElement = message.querySelector('.summary-engine_message-dots');
+            const textElement = message.querySelector('.summary-engine_company-message-text');
+            if (dotsElement) dotsElement.style.display = 'none';
+            if (textElement) textElement.style.display = 'block';
         });
     }
     
@@ -112,6 +136,7 @@ class WebflowMessagesFlow {
         if (messageIndex >= messages.length) {
             // All messages shown, show questions if they exist
             this.showQuestions(tabPane);
+            this.completedTabs.add(this.currentTab);
             this.isAnimating = false;
             return;
         }
@@ -119,7 +144,7 @@ class WebflowMessagesFlow {
         const currentMessage = messages[messageIndex];
         
         // Show dots animation first
-        this.showDotsAnimation(tabPane, () => {
+        this.showDotsAnimation(currentMessage, () => {
             // Then show the message
             this.showMessage(currentMessage, () => {
                 // Move to next message
@@ -129,22 +154,29 @@ class WebflowMessagesFlow {
     }
     
     // Show dots animation using existing Webflow dots
-    showDotsAnimation(tabPane, callback) {
-        // Find the dots element in the current message
-        const currentMessage = tabPane.querySelector(`[summary-engine^="tab-${this.currentTab}-message-"]:not([style*="display: none"])`);
-        if (!currentMessage) {
-            // If no current message, create a temporary dots element
-            this.createTemporaryDots(tabPane, callback);
-            return;
-        }
-        
+    showDotsAnimation(currentMessage, callback) {
         const dotsElement = currentMessage.querySelector('.summary-engine_message-dots');
-        if (dotsElement) {
-            // Show dots animation
+        const textElement = currentMessage.querySelector('.summary-engine_company-message-text');
+        
+        if (dotsElement && textElement) {
+            // Show the message container
+            currentMessage.style.display = 'block';
+            currentMessage.style.opacity = '0';
+            currentMessage.style.transform = 'translateY(10px)';
+            currentMessage.style.transition = 'all 0.4s ease-out';
+            
+            // Show dots, hide text
             dotsElement.style.display = 'flex';
             dotsElement.style.opacity = '1';
+            textElement.style.display = 'none';
             
-            // Hide after animation duration
+            // Animate message container in
+            requestAnimationFrame(() => {
+                currentMessage.style.opacity = '1';
+                currentMessage.style.transform = 'translateY(0)';
+            });
+            
+            // Hide dots after animation duration
             setTimeout(() => {
                 dotsElement.style.display = 'none';
                 if (callback) callback();
@@ -194,20 +226,23 @@ class WebflowMessagesFlow {
     
     // Show a message with animation
     showMessage(messageElement, callback) {
-        // Hide dots in this message
         const dotsElement = messageElement.querySelector('.summary-engine_message-dots');
-        if (dotsElement) {
+        const textElement = messageElement.querySelector('.summary-engine_company-message-text');
+        
+        if (dotsElement && textElement) {
+            // Hide dots, show text
             dotsElement.style.display = 'none';
+            textElement.style.display = 'block';
+            textElement.style.opacity = '0';
+            textElement.style.transform = 'translateY(10px)';
+            textElement.style.transition = 'all 0.4s ease-out';
+            
+            // Animate text in
+            requestAnimationFrame(() => {
+                textElement.style.opacity = '1';
+                textElement.style.transform = 'translateY(0)';
+            });
         }
-        
-        // Show the message
-        messageElement.style.display = 'block';
-        messageElement.style.transition = 'all 0.4s ease-out';
-        
-        requestAnimationFrame(() => {
-            messageElement.style.opacity = '1';
-            messageElement.style.transform = 'translateY(0)';
-        });
         
         if (callback) {
             setTimeout(callback, this.config.messageAnimationDuration);
@@ -243,6 +278,12 @@ class WebflowMessagesFlow {
     // Get current tab
     getCurrentTab() {
         return this.currentTab;
+    }
+    
+    // Reset completed tabs (call when window is closed)
+    resetCompletedTabs() {
+        this.completedTabs.clear();
+        console.log('WebflowMessagesFlow: Reset completed tabs');
     }
 }
 
