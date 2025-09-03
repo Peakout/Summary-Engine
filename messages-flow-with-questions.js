@@ -275,6 +275,9 @@ class WebflowMessagesFlowWithQuestions {
     // Show questions after messages are complete
     showQuestions(tabPane, tabNumber) {
         const questionsContainer = tabPane.querySelector(`[summary-engine="tab-${tabNumber}-tags"]`);
+        console.log('WebflowMessagesFlowWithQuestions: Looking for questions container:', `[summary-engine="tab-${tabNumber}-tags"]`);
+        console.log('WebflowMessagesFlowWithQuestions: Found questions container:', questionsContainer);
+        
         if (!questionsContainer) {
             console.log('WebflowMessagesFlowWithQuestions: No questions container found for tab:', tabNumber);
             this.completedTabs.add(tabNumber);
@@ -283,6 +286,9 @@ class WebflowMessagesFlowWithQuestions {
         }
         
         const questions = questionsContainer.querySelectorAll(`[summary-engine^="tab-${tabNumber}-tag-"]`);
+        console.log('WebflowMessagesFlowWithQuestions: Looking for questions with selector:', `[summary-engine^="tab-${tabNumber}-tag-"]`);
+        console.log('WebflowMessagesFlowWithQuestions: Found questions:', questions.length);
+        
         if (questions.length === 0) {
             console.log('WebflowMessagesFlowWithQuestions: No questions found for tab:', tabNumber);
             this.completedTabs.add(tabNumber);
