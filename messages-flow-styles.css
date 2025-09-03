@@ -3,6 +3,50 @@
  * Minimal CSS for message flow animations
  */
 
+/* Message Flow States */
+.summary-engine_company-message.flow-hidden {
+    display: none !important;
+}
+
+.summary-engine_company-message.flow-visible {
+    display: flex !important;
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.summary-engine_company-message.flow-animating {
+    display: flex !important;
+    opacity: 0;
+    transform: translateY(10px);
+    transition: all 0.4s ease-out;
+}
+
+.summary-engine_message-dots.flow-hidden {
+    display: none !important;
+}
+
+.summary-engine_message-dots.flow-visible {
+    display: flex !important;
+    opacity: 1;
+}
+
+.summary-engine_company-message-text.flow-hidden {
+    display: none !important;
+}
+
+.summary-engine_company-message-text.flow-visible {
+    display: block !important;
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.summary-engine_company-message-text.flow-animating {
+    display: block !important;
+    opacity: 0;
+    transform: translateY(10px);
+    transition: all 0.4s ease-out;
+}
+
 /* Message Slide-in Animation */
 @keyframes messageSlideIn {
     to {
