@@ -107,10 +107,8 @@ class WebflowTabs {
         // Start messages flow for this tab if messages flow is available
         if (window.webflowMessagesFlow) {
             console.log('WebflowTabs: Starting messages flow for tab:', tabNumber);
-            // Small delay to ensure tab animation is complete
-            setTimeout(() => {
-                window.webflowMessagesFlow.startTabMessages(tabNumber);
-            }, 350);
+            // Start immediately - no delay needed
+            window.webflowMessagesFlow.startTabMessages(tabNumber);
         } else {
             console.log('WebflowTabs: Messages flow not available');
         }
