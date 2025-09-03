@@ -374,19 +374,24 @@ class WebflowMessagesFlowWithQuestions {
             return;
         }
         
-        console.log('WebflowMessagesFlowWithQuestions: Question clicked:', questionAttribute);
+        console.log('🚀 [TIMING] Question clicked:', questionAttribute, 'at', new Date().toISOString());
         this.usedQuestions.add(questionAttribute);
         
         // Hide all questions
         this.hideQuestions(tabPane, tabNumber, () => {
+            console.log('✅ [TIMING] Questions hidden at', new Date().toISOString());
             // Show client question
             this.showClientQuestion(tabPane, questionAttribute, () => {
+                console.log('✅ [TIMING] Client question shown at', new Date().toISOString());
                 // Show dots animation
                 this.showTypingDots(tabPane, () => {
+                    console.log('✅ [TIMING] Typing dots finished at', new Date().toISOString());
                     // Show answer
                     this.showAnswer(tabPane, questionAttribute, () => {
+                        console.log('✅ [TIMING] Answer shown at', new Date().toISOString());
                         // Show remaining questions
                         this.showRemainingQuestions(tabPane, tabNumber);
+                        console.log('✅ [TIMING] Remaining questions shown at', new Date().toISOString());
                     });
                 }, tabNumber);
             });
@@ -415,12 +420,12 @@ class WebflowMessagesFlowWithQuestions {
     showClientQuestion(tabPane, questionAttribute, callback) {
         const clientQuestion = tabPane.querySelector(`[summary-engine="${questionAttribute}-questions"]`);
         if (!clientQuestion) {
-            console.log('WebflowMessagesFlowWithQuestions: No client question found for:', questionAttribute);
+            console.log('❌ [DEBUG] No client question found for:', questionAttribute);
             if (callback) callback();
             return;
         }
         
-        console.log('WebflowMessagesFlowWithQuestions: Showing client question:', questionAttribute);
+        console.log('🔍 [DEBUG] Showing client question:', questionAttribute, 'at', new Date().toISOString());
         
         // Get the original question text from the clicked tag
         const originalQuestion = tabPane.querySelector(`[summary-engine="${questionAttribute}"]`);
@@ -442,11 +447,13 @@ class WebflowMessagesFlowWithQuestions {
         }
         
         // Show client question immediately
+        console.log('🔍 [DEBUG] Setting client question styles at', new Date().toISOString());
         clientQuestion.style.display = 'block';
         clientQuestion.style.opacity = '1';
         clientQuestion.style.transform = 'translateY(0)';
         
         if (callback) {
+            console.log('🔍 [DEBUG] Calling client question callback at', new Date().toISOString());
             // Call callback immediately - no delay needed
             callback();
         }
@@ -454,6 +461,7 @@ class WebflowMessagesFlowWithQuestions {
     
     // Show typing dots
     showTypingDots(tabPane, callback, tabNumber) {
+        console.log('🔍 [DEBUG] Creating typing dots at', new Date().toISOString());
         // Create typing indicator
         const typingIndicator = document.createElement('div');
         typingIndicator.className = 'summary-engine_company-message';
@@ -475,6 +483,7 @@ class WebflowMessagesFlowWithQuestions {
         `;
         
         // Insert at the end of the tab content (after all existing elements)
+        console.log('🔍 [DEBUG] Inserting typing dots at', new Date().toISOString());
         const tabContent = tabPane.querySelector('.summary-engine_tab-pane-content');
         if (tabContent) {
             tabContent.appendChild(typingIndicator);
@@ -483,12 +492,14 @@ class WebflowMessagesFlowWithQuestions {
         }
         
         // Start dots animation
+        console.log('🔍 [DEBUG] Starting dots animation at', new Date().toISOString());
         const dots = typingIndicator.querySelectorAll('.summary-engine_message-dot');
         dots.forEach((dot, index) => {
             dot.style.animation = `typing 1.5s infinite ${index * 0.2}s`;
         });
         
         setTimeout(() => {
+            console.log('🔍 [DEBUG] Removing typing dots at', new Date().toISOString());
             typingIndicator.remove();
             if (callback) callback();
         }, this.config.typingDuration);
@@ -496,17 +507,17 @@ class WebflowMessagesFlowWithQuestions {
     
     // Show answer
     showAnswer(tabPane, questionAttribute, callback) {
+        console.log('🔍 [DEBUG] Looking for answer at', new Date().toISOString());
         const answerElement = tabPane.querySelector(`[summary-engine="${questionAttribute}-answer"]`);
-        console.log('WebflowMessagesFlowWithQuestions: Looking for answer with selector:', `[summary-engine="${questionAttribute}-answer"]`);
-        console.log('WebflowMessagesFlowWithQuestions: Found answer element:', answerElement);
+        console.log('🔍 [DEBUG] Answer element found:', answerElement);
         
         if (!answerElement) {
-            console.log('WebflowMessagesFlowWithQuestions: No answer found for:', questionAttribute);
+            console.log('❌ [DEBUG] No answer found for:', questionAttribute);
             if (callback) callback();
             return;
         }
         
-        console.log('WebflowMessagesFlowWithQuestions: Showing answer for:', questionAttribute);
+        console.log('🔍 [DEBUG] Showing answer for:', questionAttribute, 'at', new Date().toISOString());
         
         // Move answer to the end (after all previous questions/answers)
         const tabContent = tabPane.querySelector('.summary-engine_tab-pane-content');
@@ -518,9 +529,12 @@ class WebflowMessagesFlowWithQuestions {
         }
         
         // Use the same logic as regular messages - show dots animation first
+        console.log('🔍 [DEBUG] Starting answer dots animation at', new Date().toISOString());
         this.showDotsAnimation(answerElement, () => {
+            console.log('🔍 [DEBUG] Answer dots finished, showing message at', new Date().toISOString());
             // Then show the message
             this.showMessage(answerElement, () => {
+                console.log('🔍 [DEBUG] Answer message shown at', new Date().toISOString());
                 if (callback) callback();
             });
         });
