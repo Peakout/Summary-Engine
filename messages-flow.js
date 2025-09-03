@@ -371,7 +371,7 @@ class WebflowMessagesFlow {
         console.log('WebflowMessagesFlow: Window state set to:', isOpen);
         
         // If window is closing, hide all messages immediately
-        if (!isOpen) {
+        if (!isOpen && this.tabsContainer) {
             this.hideAllMessagesImmediately();
         }
     }
@@ -380,8 +380,11 @@ class WebflowMessagesFlow {
     hideAllMessagesImmediately() {
         console.log('WebflowMessagesFlow: Hiding all messages immediately');
         
+        // Get tab panes directly from DOM
+        const tabPanes = this.tabsContainer.querySelectorAll('[summary-engine^="tab-"]');
+        
         // Hide all messages across all tabs
-        this.tabPanes.forEach(tabPane => {
+        tabPanes.forEach(tabPane => {
             const tabNumber = tabPane.getAttribute('summary-engine').replace('tab-', '');
             const messages = tabPane.querySelectorAll(`[summary-engine^="tab-${tabNumber}-message-"]`);
             
