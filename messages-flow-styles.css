@@ -1,0 +1,40 @@
+/**
+ * Webflow Messages Flow - Essential Animations Only
+ * Minimal CSS for message flow animations
+ */
+
+/* Message Slide-in Animation */
+@keyframes messageSlideIn {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Typing Dots Animation */
+.summary-engine_message-dot {
+    animation: typing 1.4s infinite ease-in-out;
+}
+
+.summary-engine_message-dot.is-1 { 
+    animation-delay: -0.32s; 
+}
+
+.summary-engine_message-dot.is-2 { 
+    animation-delay: -0.16s; 
+}
+
+.summary-engine_message-dot.is-3 { 
+    animation-delay: 0s; 
+}
+
+@keyframes typing {
+    0%, 80%, 100% {
+        transform: scale(0.8);
+        opacity: 0.5;
+    }
+    40% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
