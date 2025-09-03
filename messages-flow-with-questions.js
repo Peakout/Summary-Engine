@@ -383,17 +383,13 @@ class WebflowMessagesFlowWithQuestions {
             // Show client question
             this.showClientQuestion(tabPane, questionAttribute, () => {
                 console.log('✅ [TIMING] Client question shown at', new Date().toISOString());
-                // Show dots animation
-                this.showTypingDots(tabPane, () => {
-                    console.log('✅ [TIMING] Typing dots finished at', new Date().toISOString());
-                    // Show answer
-                    this.showAnswer(tabPane, questionAttribute, () => {
-                        console.log('✅ [TIMING] Answer shown at', new Date().toISOString());
-                        // Show remaining questions
-                        this.showRemainingQuestions(tabPane, tabNumber);
-                        console.log('✅ [TIMING] Remaining questions shown at', new Date().toISOString());
-                    });
-                }, tabNumber);
+                // Show answer directly (it has its own dots animation)
+                this.showAnswer(tabPane, questionAttribute, () => {
+                    console.log('✅ [TIMING] Answer shown at', new Date().toISOString());
+                    // Show remaining questions
+                    this.showRemainingQuestions(tabPane, tabNumber);
+                    console.log('✅ [TIMING] Remaining questions shown at', new Date().toISOString());
+                });
             });
         });
     }
