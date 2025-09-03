@@ -106,11 +106,14 @@ class WebflowMessagesFlowWithQuestions {
         }
         this.lastCallTime = now;
         
-        // If already completed, show all messages
+        // If already completed, show all messages and questions
         if (this.completedTabs.has(tabNumber)) {
-            console.log('WebflowMessagesFlowWithQuestions: Tab already completed, showing all messages');
+            console.log('WebflowMessagesFlowWithQuestions: Tab already completed, showing all messages and questions');
             const tabPane = this.tabsContainer.querySelector(`[summary-engine="tab-${tabNumber}"]`);
-            if (tabPane) this.showAllMessages(tabPane);
+            if (tabPane) {
+                this.showAllMessages(tabPane);
+                this.showQuestionsWithoutHandlers(tabPane, tabNumber);
+            }
             return;
         }
         
@@ -339,6 +342,28 @@ class WebflowMessagesFlowWithQuestions {
         this.animatingTabs.delete(tabNumber);
     }
     
+    // Show questions without adding click handlers (for completed tabs)
+    showQuestionsWithoutHandlers(tabPane, tabNumber) {
+        const questionsContainer = tabPane.querySelector(`[summary-engine="tab-${tabNumber}-tags"]`);
+        if (!questionsContainer) {
+            console.log('WebflowMessagesFlowWithQuestions: No questions container found for completed tab:', tabNumber);
+            return;
+        }
+        
+        // Show questions container
+        questionsContainer.style.display = 'flex';
+        questionsContainer.style.opacity = '1';
+        questionsContainer.style.transform = 'translateY(0)';
+        
+        // Add click handlers to questions
+        const questions = questionsContainer.querySelectorAll(`[summary-engine^="tab-${tabNumber}-tag-"]`);
+        questions.forEach(question => {
+            question.addEventListener('click', () => {
+                this.handleQuestionClick(tabPane, question, tabNumber);
+            });
+        });
+    }
+    
     // Handle question click
     handleQuestionClick(tabPane, clickedQuestion, tabNumber) {
         const questionAttribute = clickedQuestion.getAttribute('summary-engine');
@@ -458,6 +483,9 @@ class WebflowMessagesFlowWithQuestions {
     // Show answer
     showAnswer(tabPane, questionAttribute, callback) {
         const answerElement = tabPane.querySelector(`[summary-engine="${questionAttribute}-answer"]`);
+        console.log('WebflowMessagesFlowWithQuestions: Looking for answer with selector:', `[summary-engine="${questionAttribute}-answer"]`);
+        console.log('WebflowMessagesFlowWithQuestions: Found answer element:', answerElement);
+        
         if (!answerElement) {
             console.log('WebflowMessagesFlowWithQuestions: No answer found for:', questionAttribute);
             if (callback) callback();
