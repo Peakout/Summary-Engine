@@ -667,10 +667,8 @@ class WebflowMessagesFlowWithQuestions {
     stopAllAnimations() {
         console.log('WebflowMessagesFlowWithQuestions: Stopping all animations');
         
-        // Clear all animation tracking
+        // Only clear currently animating tabs, not completed ones
         this.animatingTabs.clear();
-        this.completedTabs.clear();
-        this.usedQuestions.clear();
         
         // Stop all timeouts and animations
         const allTabPanes = this.tabsContainer.querySelectorAll('[summary-engine^="tab-"]');
@@ -679,38 +677,13 @@ class WebflowMessagesFlowWithQuestions {
             const messages = tabPane.querySelectorAll(`[summary-engine^="tab-${tabNumber}-message-"]`);
             
             messages.forEach(message => {
-                // Hide message
-                message.style.display = 'none';
-                
                 // Stop dots animations
                 const dots = message.querySelectorAll('[summary-engine^="dot-"]');
                 dots.forEach(dot => {
                     dot.style.animation = 'none';
                 });
-                
-                // Reset dots and content visibility
-                const dotsContainer = message.querySelector('[summary-engine="dots"]');
-                const contentContainer = message.querySelector('[summary-engine="message-content"]');
-                
-                if (dotsContainer) {
-                    dotsContainer.style.display = 'none';
-                    dotsContainer.style.opacity = '0';
-                }
-                if (contentContainer) {
-                    contentContainer.style.display = 'none';
-                    contentContainer.style.opacity = '0';
-                }
             });
-            
-            // Hide questions containers
-            const questionsContainer = tabPane.querySelector(`[summary-engine="tab-${tabNumber}-tags"]`);
-            if (questionsContainer) {
-                questionsContainer.style.display = 'none';
-            }
         });
-        
-        // Reset window state
-        this.windowIsOpen = false;
     }
     
     resetCompletedTabs() {
