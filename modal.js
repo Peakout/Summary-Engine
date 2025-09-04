@@ -60,14 +60,8 @@ class WebflowModal {
             });
         }
         
-        // Main button (if clicked while modal is open)
-        if (this.mainButton) {
-            this.mainButton.addEventListener('click', () => {
-                if (this.isModalVisible()) {
-                    this.openWindowAndCloseModal();
-                }
-            });
-        }
+        // Main button click is handled by window.js
+        // No need to duplicate the listener here
         
         // Close modal on escape key
         document.addEventListener('keydown', (e) => {
@@ -99,7 +93,12 @@ class WebflowModal {
         console.log('🔍 [MODAL] Dismissed count:', dismissedCount, '- This is modal #', dismissedCount + 1);
         
         setTimeout(() => {
-            this.showModal();
+            // Check again before showing (user might have used summary in the meantime)
+            if (this.shouldShowModal()) {
+                this.showModal();
+            } else {
+                console.log('❌ [MODAL] Modal conditions changed, not showing');
+            }
         }, delay);
     }
     
@@ -238,6 +237,11 @@ class WebflowModal {
     forceShowModal() {
         console.log('WebflowModal: Force showing modal');
         this.showModal();
+    }
+    
+    // Check if modal should be shown (for external calls)
+    shouldShowModalNow() {
+        return this.shouldShowModal();
     }
     
     resetSession() {
