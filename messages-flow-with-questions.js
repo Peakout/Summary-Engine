@@ -222,8 +222,10 @@ class WebflowMessagesFlowWithQuestions {
     
     // Show message with dots animation flow
     showMessageWithFlow(tabPane, messages, messageIndex, tabNumber) {
+        console.log('🔍 [DEBUG] showMessageWithFlow called with tabNumber:', tabNumber, 'messageIndex:', messageIndex, 'messages.length:', messages.length);
         if (messageIndex >= messages.length) {
             // All messages shown, now show questions
+            console.log('🔍 [DEBUG] All messages shown, calling showQuestions for tabNumber:', tabNumber);
             this.showQuestions(tabPane, tabNumber);
             return;
         }
@@ -298,6 +300,8 @@ class WebflowMessagesFlowWithQuestions {
     
     // Show questions after messages are complete
     showQuestions(tabPane, tabNumber) {
+        console.log('🔍 [DEBUG] showQuestions called with tabNumber:', tabNumber);
+        console.log('🔍 [DEBUG] tabPane attribute:', tabPane.getAttribute('summary-engine'));
         const questionsContainer = tabPane.querySelector(`[summary-engine="tab-${tabNumber}-tags"]`);
         console.log('WebflowMessagesFlowWithQuestions: Looking for questions container:', `[summary-engine="tab-${tabNumber}-tags"]`);
         console.log('WebflowMessagesFlowWithQuestions: Found questions container:', questionsContainer);
