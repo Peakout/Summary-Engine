@@ -127,6 +127,12 @@ class WebflowMessagesFlowWithQuestions {
             return;
         }
         
+        // If another tab is animating, stop it first
+        if (this.animatingTabs.size > 0) {
+            console.log('WebflowMessagesFlowWithQuestions: Another tab is animating, stopping it first');
+            this.stopAllAnimations();
+        }
+        
         const tabPane = this.tabsContainer.querySelector(`[summary-engine="tab-${tabNumber}"]`);
         if (!tabPane) {
             console.warn(`WebflowMessagesFlowWithQuestions: Tab ${tabNumber} not found`);
@@ -630,6 +636,20 @@ class WebflowMessagesFlowWithQuestions {
     setWindowOpen(isOpen) {
         this.windowIsOpen = isOpen;
         console.log('WebflowMessagesFlowWithQuestions: Window state set to:', isOpen);
+    }
+    
+    stopAllAnimations() {
+        console.log('WebflowMessagesFlowWithQuestions: Stopping all animations');
+        this.animatingTabs.clear();
+        // Hide all currently visible messages to reset state
+        const allTabPanes = this.tabsContainer.querySelectorAll('[summary-engine^="tab-"]');
+        allTabPanes.forEach(tabPane => {
+            const tabNumber = tabPane.getAttribute('summary-engine').replace('tab-', '');
+            const messages = tabPane.querySelectorAll(`[summary-engine^="tab-${tabNumber}-message-"]`);
+            messages.forEach(message => {
+                message.style.display = 'none';
+            });
+        });
     }
     
     resetCompletedTabs() {
