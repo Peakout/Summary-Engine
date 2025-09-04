@@ -480,7 +480,7 @@ class WebflowMessagesFlowWithQuestions {
         const originalQuestion = tabPane.querySelector(`[summary-engine="${questionAttribute}"]`);
         if (originalQuestion) {
             const questionText = originalQuestion.textContent.trim();
-            const clientQuestionText = clientQuestion.querySelector('.summary-engine_client-message-text');
+            const clientQuestionText = clientQuestion.querySelector('[summary-engine="message-content"]');
             if (clientQuestionText) {
                 clientQuestionText.textContent = questionText;
             }
@@ -549,7 +549,7 @@ class WebflowMessagesFlowWithQuestions {
         
         // Start dots animation
         console.log('🔍 [DEBUG] Starting dots animation at', new Date().toISOString());
-        const dots = typingIndicator.querySelectorAll('.summary-engine_message-dot');
+        const dots = typingIndicator.querySelectorAll('[summary-engine^="dot-"]');
         dots.forEach((dot, index) => {
             dot.style.animation = `typing 1.5s infinite ${index * 0.2}s`;
         });
