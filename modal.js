@@ -151,9 +151,12 @@ class WebflowModal {
         
         // Show modal with smooth animation
         this.modal.style.display = 'flex';
+        this.modal.style.transition = 'all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
         this.modal.style.opacity = '0';
         this.modal.style.transform = 'scale(0.95)';
-        this.modal.style.transition = 'all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
+        
+        // Force reflow to ensure transition is applied
+        this.modal.offsetHeight;
         
         // Animate in
         requestAnimationFrame(() => {
