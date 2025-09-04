@@ -94,6 +94,10 @@ class WebflowWindow {
             window.webflowModal.dismissModal();
         }
         
+        // Mark summary as used (user opened window directly)
+        this.setSessionData('summary_used', true);
+        this.setSessionData(`summary_opened_${this.getCaseStudyId()}`, true);
+        
         // Show the window
         this.window.style.display = 'block';
         
@@ -179,6 +183,33 @@ class WebflowWindow {
     
     isWindowOpen() {
         return this.isOpen;
+    }
+    
+    // Session storage helpers
+    getSessionData(key, defaultValue) {
+        try {
+            const value = sessionStorage.getItem(key);
+            return value !== null ? JSON.parse(value) : defaultValue;
+        } catch (e) {
+            console.warn('WebflowWindow: Error reading session data:', e);
+            return defaultValue;
+        }
+    }
+    
+    setSessionData(key, value) {
+        try {
+            sessionStorage.setItem(key, JSON.stringify(value));
+        } catch (e) {
+            console.warn('WebflowWindow: Error writing session data:', e);
+        }
+    }
+    
+    getCaseStudyId() {
+        // Extract case study ID from URL or page
+        const path = window.location.pathname;
+        const segments = path.split('/').filter(segment => segment);
+        const caseStudyId = segments[segments.length - 1] || 'default';
+        return caseStudyId;
     }
 }
 
