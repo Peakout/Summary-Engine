@@ -88,6 +88,12 @@ class WebflowWindow {
         this.isAnimating = true;
         this.isOpen = true;
         
+        // Close modal if it's open
+        if (window.webflowModal && window.webflowModal.isModalVisible()) {
+            console.log('WebflowWindow: Closing modal before opening window');
+            window.webflowModal.dismissModal();
+        }
+        
         // Show the window
         this.window.style.display = 'block';
         
