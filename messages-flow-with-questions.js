@@ -133,11 +133,8 @@ class WebflowMessagesFlowWithQuestions {
             return;
         }
         
-        // If another tab is animating, stop it first
-        if (this.animatingTabs.size > 0) {
-            console.log('WebflowMessagesFlowWithQuestions: Another tab is animating, stopping it first');
-            this.stopAllAnimations();
-        }
+        // Allow multiple tabs to animate simultaneously
+        // No blocking - each tab starts its animation immediately when clicked
         
         // Add current tab to animating set
         this.animatingTabs.add(tabNumber);
