@@ -112,7 +112,11 @@ class WebflowMessagesFlowWithQuestions {
             const tabPane = this.tabsContainer.querySelector(`[summary-engine="tab-${tabNumber}"]`);
             if (tabPane) {
                 this.showAllMessages(tabPane);
-                this.showQuestionsWithoutHandlers(tabPane, tabNumber);
+                // Only show questions if they exist
+                const questionsContainer = tabPane.querySelector(`[summary-engine="tab-${tabNumber}-tags"]`);
+                if (questionsContainer) {
+                    this.showQuestionsWithoutHandlers(tabPane, tabNumber);
+                }
             }
             return;
         }
@@ -300,8 +304,10 @@ class WebflowMessagesFlowWithQuestions {
         
         if (!questionsContainer) {
             console.log('WebflowMessagesFlowWithQuestions: No questions container found for tab:', tabNumber);
+            // For tabs without questions, just mark as completed and show messages
             this.completedTabs.add(tabNumber);
             this.animatingTabs.delete(tabNumber);
+            this.showAllMessages(tabPane);
             return;
         }
         
