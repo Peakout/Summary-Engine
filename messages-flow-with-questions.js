@@ -100,11 +100,17 @@ class WebflowMessagesFlowWithQuestions {
             return;
         }
         
-        if (now - this.lastCallTime < 150) {
+        if (now - this.lastCallTime < 200) {
             console.log('WebflowMessagesFlowWithQuestions: Debouncing rapid calls');
             return;
         }
         this.lastCallTime = now;
+        
+        // If already animating this specific tab, don't restart
+        if (this.animatingTabs.has(tabNumber)) {
+            console.log('WebflowMessagesFlowWithQuestions: Tab', tabNumber, 'already animating, skipping');
+            return;
+        }
         
         // If already completed, show all messages and questions
         if (this.completedTabs.has(tabNumber)) {
@@ -660,16 +666,51 @@ class WebflowMessagesFlowWithQuestions {
     
     stopAllAnimations() {
         console.log('WebflowMessagesFlowWithQuestions: Stopping all animations');
+        
+        // Clear all animation tracking
         this.animatingTabs.clear();
-        // Hide all currently visible messages to reset state
+        this.completedTabs.clear();
+        this.usedQuestions.clear();
+        
+        // Stop all timeouts and animations
         const allTabPanes = this.tabsContainer.querySelectorAll('[summary-engine^="tab-"]');
         allTabPanes.forEach(tabPane => {
             const tabNumber = tabPane.getAttribute('summary-engine').replace('tab-', '');
             const messages = tabPane.querySelectorAll(`[summary-engine^="tab-${tabNumber}-message-"]`);
+            
             messages.forEach(message => {
+                // Hide message
                 message.style.display = 'none';
+                
+                // Stop dots animations
+                const dots = message.querySelectorAll('[summary-engine^="dot-"]');
+                dots.forEach(dot => {
+                    dot.style.animation = 'none';
+                });
+                
+                // Reset dots and content visibility
+                const dotsContainer = message.querySelector('[summary-engine="dots"]');
+                const contentContainer = message.querySelector('[summary-engine="message-content"]');
+                
+                if (dotsContainer) {
+                    dotsContainer.style.display = 'none';
+                    dotsContainer.style.opacity = '0';
+                }
+                if (contentContainer) {
+                    contentContainer.style.display = 'none';
+                    contentContainer.style.opacity = '0';
+                }
             });
+            
+            // Hide questions containers
+            const questionsContainer = tabPane.querySelector(`[summary-engine="tab-${tabNumber}-tags"]`);
+            if (questionsContainer) {
+                questionsContainer.style.display = 'none';
+            }
         });
+        
+        // Reset window state
+        this.windowIsOpen = false;
     }
     
     resetCompletedTabs() {
