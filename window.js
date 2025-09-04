@@ -130,10 +130,9 @@ class WebflowWindow {
         this.isAnimating = true;
         this.isOpen = false;
         
-        // Set window as closed in messages flow and stop all animations
+        // Set window as closed in messages flow
         if (window.webflowMessagesFlow) {
             window.webflowMessagesFlow.setWindowOpen(false);
-            window.webflowMessagesFlow.stopAllAnimations();
         }
         
         // Animate button rotation back using class
