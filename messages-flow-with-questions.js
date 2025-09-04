@@ -461,16 +461,23 @@ class WebflowMessagesFlowWithQuestions {
             tabContent.appendChild(clientQuestion);
         }
         
-        // Show client question immediately
+        // Show client question with smooth animation
         console.log('🔍 [DEBUG] Setting client question styles at', new Date().toISOString());
         clientQuestion.style.display = 'block';
-        clientQuestion.style.opacity = '1';
-        clientQuestion.style.transform = 'translateY(0)';
+        clientQuestion.style.opacity = '0';
+        clientQuestion.style.transform = 'translateY(10px)';
+        clientQuestion.style.transition = 'all 0.4s ease-out';
+        
+        // Animate client question in
+        requestAnimationFrame(() => {
+            clientQuestion.style.opacity = '1';
+            clientQuestion.style.transform = 'translateY(0)';
+        });
         
         if (callback) {
             console.log('🔍 [DEBUG] Calling client question callback at', new Date().toISOString());
-            // Call callback immediately - no delay needed
-            callback();
+            // Call callback after animation
+            setTimeout(callback, 400);
         }
     }
     
