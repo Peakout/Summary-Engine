@@ -188,8 +188,10 @@ class WebflowMessagesFlowWithQuestions {
             message.style.display = 'block';
         });
         
-        // Also show questions if they exist
-        this.showQuestions(tabPane, tabNumber);
+        // Also show questions if they exist (only if not already completed)
+        if (!this.completedTabs.has(tabNumber)) {
+            this.showQuestions(tabPane, tabNumber);
+        }
     }
     
     // Hide all messages in a tab
