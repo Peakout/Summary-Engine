@@ -11,9 +11,8 @@ class WebflowModal {
         }
         
         this.config = {
-            firstModalDelay: 15000,    // 15 seconds for first case study
-            subsequentModalDelay: 20000, // 20 seconds for subsequent case studies
-            rateLimitDelay: 30000,     // 30 seconds between modals
+            firstModalDelay: 5000,     // 5 seconds for first case study
+            subsequentModalDelay: 10000, // 10 seconds for subsequent case studies
             maxDismissals: 2           // Maximum dismissals before stopping
         };
         
@@ -86,15 +85,18 @@ class WebflowModal {
     }
     
     checkModalDisplay() {
-        console.log('WebflowModal: Checking if modal should be displayed');
+        console.log('🔍 [MODAL] Checking if modal should be displayed');
+        console.log('🔍 [MODAL] Case study ID:', this.caseStudyId);
         
         if (!this.shouldShowModal()) {
-            console.log('WebflowModal: Modal should not be shown');
+            console.log('❌ [MODAL] Modal should not be shown');
             return;
         }
         
         const delay = this.getModalDelay();
-        console.log('WebflowModal: Showing modal after', delay, 'ms');
+        const dismissedCount = this.getSessionData('modal_dismissed_count', 0);
+        console.log('✅ [MODAL] Modal will be shown after', delay, 'ms');
+        console.log('🔍 [MODAL] Dismissed count:', dismissedCount, '- This is modal #', dismissedCount + 1);
         
         setTimeout(() => {
             this.showModal();
@@ -105,41 +107,33 @@ class WebflowModal {
         // Check all conditions
         const summaryUsed = this.getSessionData('summary_used', false);
         const dismissedCount = this.getSessionData('modal_dismissed_count', 0);
-        const modalShown = this.getSessionData(`modal_shown_${this.caseStudyId}`, false);
-        const lastModalTime = this.getSessionData('last_modal_timestamp', 0);
-        const now = Date.now();
+        const userActionTaken = this.getSessionData(`user_action_${this.caseStudyId}`, false);
         
-        console.log('WebflowModal: Checking conditions:', {
+        console.log('🔍 [MODAL] Checking conditions:', {
             summaryUsed,
             dismissedCount,
-            modalShown,
-            timeSinceLastModal: now - lastModalTime
+            userActionTaken
         });
         
         // User hasn't used summary feature
         if (summaryUsed) {
-            console.log('WebflowModal: User already used summary feature');
+            console.log('❌ [MODAL] User already used summary feature');
             return false;
         }
         
         // User hasn't dismissed modal too many times
         if (dismissedCount >= this.config.maxDismissals) {
-            console.log('WebflowModal: User dismissed modal too many times');
+            console.log('❌ [MODAL] User dismissed modal too many times (', dismissedCount, '/', this.config.maxDismissals, ')');
             return false;
         }
         
-        // Modal not already shown on this case study
-        if (modalShown) {
-            console.log('WebflowModal: Modal already shown on this case study');
+        // User hasn't taken any action on this case study yet
+        if (userActionTaken) {
+            console.log('❌ [MODAL] User already took action on this case study');
             return false;
         }
         
-        // Rate limiting - at least 30 seconds since last modal
-        if (lastModalTime > 0 && (now - lastModalTime) < this.config.rateLimitDelay) {
-            console.log('WebflowModal: Rate limited - too soon since last modal');
-            return false;
-        }
-        
+        console.log('✅ [MODAL] All conditions met - modal will be shown');
         return true;
     }
     
@@ -149,18 +143,19 @@ class WebflowModal {
     }
     
     showModal() {
-        console.log('WebflowModal: Showing modal');
+        console.log('🚀 [MODAL] Showing modal');
         
         // Track modal display
-        this.setSessionData(`modal_shown_${this.caseStudyId}`, true);
+        // Don't mark action as taken yet - wait for user interaction
         this.setSessionData('last_modal_timestamp', Date.now());
         
-        // Show modal with animation
+        // Show modal with smooth animation
         this.modal.style.display = 'flex';
         this.modal.style.opacity = '0';
-        this.modal.style.transform = 'scale(0.9)';
-        this.modal.style.transition = 'all 0.3s ease-out';
+        this.modal.style.transform = 'scale(0.95)';
+        this.modal.style.transition = 'all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
         
+        // Animate in
         requestAnimationFrame(() => {
             this.modal.style.opacity = '1';
             this.modal.style.transform = 'scale(1)';
@@ -184,6 +179,9 @@ class WebflowModal {
         const dismissedCount = this.getSessionData('modal_dismissed_count', 0);
         this.setSessionData('modal_dismissed_count', dismissedCount + 1);
         
+        // Mark user action as taken (negative action)
+        this.setSessionData(`user_action_${this.caseStudyId}`, true);
+        
         // Hide modal with animation
         this.modal.style.opacity = '0';
         this.modal.style.transform = 'scale(0.9)';
@@ -199,6 +197,9 @@ class WebflowModal {
         // Track summary usage
         this.setSessionData('summary_used', true);
         this.setSessionData(`summary_opened_${this.caseStudyId}`, true);
+        
+        // Mark user action as taken (positive action)
+        this.setSessionData(`user_action_${this.caseStudyId}`, true);
         
         // Close modal
         this.dismissModal();
@@ -244,7 +245,7 @@ class WebflowModal {
         
         // Remove all case study specific data
         Object.keys(sessionStorage).forEach(key => {
-            if (key.startsWith('modal_shown_') || key.startsWith('summary_opened_')) {
+            if (key.startsWith('user_action_') || key.startsWith('summary_opened_')) {
                 sessionStorage.removeItem(key);
             }
         });
