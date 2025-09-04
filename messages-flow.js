@@ -38,8 +38,8 @@ class WebflowMessagesFlow {
             const messages = tabPane.querySelectorAll(`[summary-engine^="tab-${tabNumber}-message-"]`);
             
             messages.forEach(message => {
-                const dots = message.querySelector('.summary-engine_message-dots');
-                const text = message.querySelector('.summary-engine_company-message-text');
+                const dots = message.querySelector('[summary-engine="dots"]');
+                const text = message.querySelector('[summary-engine="message-content"]');
                 
                 if (dots) dots.style.display = 'flex';
                 if (text) text.style.display = 'none';
@@ -104,8 +104,8 @@ class WebflowMessagesFlow {
         const messages = tabPane.querySelectorAll(`[summary-engine^="tab-${tabNumber}-message-"]`);
         
         messages.forEach(message => {
-            const dots = message.querySelector('.summary-engine_message-dots');
-            const text = message.querySelector('.summary-engine_company-message-text');
+            const dots = message.querySelector('[summary-engine="dots"]');
+            const text = message.querySelector('[summary-engine="message-content"]');
             
             if (dots) dots.style.display = 'none';
             if (text) text.style.display = 'block';
@@ -123,8 +123,8 @@ class WebflowMessagesFlow {
         
         messages.forEach((message, index) => {
             console.log('WebflowMessagesFlow: Showing message', index + 1);
-            const dots = message.querySelector('.summary-engine_message-dots');
-            const text = message.querySelector('.summary-engine_company-message-text');
+            const dots = message.querySelector('[summary-engine="dots"]');
+            const text = message.querySelector('[summary-engine="message-content"]');
             
             if (dots) dots.style.display = 'none';
             if (text) text.style.display = 'block';
@@ -140,8 +140,8 @@ class WebflowMessagesFlow {
         console.log('WebflowMessagesFlow: Hiding messages:', messages.length);
         messages.forEach((message, index) => {
             console.log('WebflowMessagesFlow: Hiding message', index + 1);
-            const dots = message.querySelector('.summary-engine_message-dots');
-            const text = message.querySelector('.summary-engine_company-message-text');
+            const dots = message.querySelector('[summary-engine="dots"]');
+            const text = message.querySelector('[summary-engine="message-content"]');
             
             if (dots) {
                 dots.style.display = 'flex';
@@ -192,8 +192,8 @@ class WebflowMessagesFlow {
     
     // Show dots animation
     showDotsAnimation(currentMessage, callback) {
-        const dotsElement = currentMessage.querySelector('.summary-engine_message-dots');
-        const textElement = currentMessage.querySelector('.summary-engine_company-message-text');
+        const dotsElement = currentMessage.querySelector('[summary-engine="dots"]');
+        const textElement = currentMessage.querySelector('[summary-engine="message-content"]');
         
         if (dotsElement && textElement) {
             // Show message container
@@ -206,7 +206,7 @@ class WebflowMessagesFlow {
             textElement.style.opacity = '0';
             
             // Start dots animation
-            const dots = dotsElement.querySelectorAll('.summary-engine_message-dot');
+            const dots = dotsElement.querySelectorAll('[summary-engine^="dot-"]');
             dots.forEach((dot, index) => {
                 dot.style.animation = `typing 1.5s infinite ${index * 0.2}s`;
             });
@@ -223,8 +223,8 @@ class WebflowMessagesFlow {
     
     // Show a message with animation
     showMessage(messageElement, callback) {
-        const dotsElement = messageElement.querySelector('.summary-engine_message-dots');
-        const textElement = messageElement.querySelector('.summary-engine_company-message-text');
+        const dotsElement = messageElement.querySelector('[summary-engine="dots"]');
+        const textElement = messageElement.querySelector('[summary-engine="message-content"]');
         
         if (dotsElement && textElement) {
             // Hide dots, show text
