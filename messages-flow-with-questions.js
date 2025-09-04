@@ -250,21 +250,21 @@ class WebflowMessagesFlowWithQuestions {
     
     // Show dots animation
     showDotsAnimation(currentMessage, callback) {
-        const dotsElement = currentMessage.querySelector('.summary-engine_message-dots');
-        const textElement = currentMessage.querySelector('.summary-engine_company-message-text');
+        const dotsElement = currentMessage.querySelector('[summary-engine="dots"]');
+        const contentElement = currentMessage.querySelector('[summary-engine="message-content"]');
         
-        if (dotsElement && textElement) {
+        if (dotsElement && contentElement) {
             // Show message container
             currentMessage.style.display = 'block';
             
-            // Show dots, hide text
+            // Show dots, hide content
             dotsElement.style.display = 'flex';
             dotsElement.style.opacity = '1';
-            textElement.style.display = 'none';
-            textElement.style.opacity = '0';
+            contentElement.style.display = 'none';
+            contentElement.style.opacity = '0';
             
             // Start dots animation
-            const dots = dotsElement.querySelectorAll('.summary-engine_message-dot');
+            const dots = dotsElement.querySelectorAll('[summary-engine^="dot-"]');
             dots.forEach((dot, index) => {
                 dot.style.animation = `typing 1.5s infinite ${index * 0.2}s`;
             });
@@ -281,21 +281,21 @@ class WebflowMessagesFlowWithQuestions {
     
     // Show a message with animation
     showMessage(messageElement, callback) {
-        const dotsElement = messageElement.querySelector('.summary-engine_message-dots');
-        const textElement = messageElement.querySelector('.summary-engine_company-message-text');
+        const dotsElement = messageElement.querySelector('[summary-engine="dots"]');
+        const contentElement = messageElement.querySelector('[summary-engine="message-content"]');
         
-        if (dotsElement && textElement) {
-            // Hide dots, show text
+        if (dotsElement && contentElement) {
+            // Hide dots, show content
             dotsElement.style.display = 'none';
-            textElement.style.display = 'block';
-            textElement.style.opacity = '0';
-            textElement.style.transform = 'translateY(10px)';
-            textElement.style.transition = 'all 0.4s ease-out';
+            contentElement.style.display = 'block';
+            contentElement.style.opacity = '0';
+            contentElement.style.transform = 'translateY(10px)';
+            contentElement.style.transition = 'all 0.4s ease-out';
             
-            // Animate text in
+            // Animate content in
             requestAnimationFrame(() => {
-                textElement.style.opacity = '1';
-                textElement.style.transform = 'translateY(0)';
+                contentElement.style.opacity = '1';
+                contentElement.style.transform = 'translateY(0)';
             });
         }
         
