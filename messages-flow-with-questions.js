@@ -47,8 +47,8 @@ class WebflowMessagesFlowWithQuestions {
                 console.log('WebflowMessagesFlowWithQuestions: Found messages for tab', tabNumber, ':', messages.length);
                 
                 messages.forEach(message => {
-                    const dots = message.querySelector('.summary-engine_message-dots');
-                    const text = message.querySelector('.summary-engine_company-message-text');
+                    const dots = message.querySelector('[summary-engine="dots"]');
+                    const text = message.querySelector('[summary-engine="message-content"]');
                     
                     if (dots) dots.style.display = 'flex';
                     if (text) text.style.display = 'none';
@@ -161,8 +161,8 @@ class WebflowMessagesFlowWithQuestions {
         const messages = tabPane.querySelectorAll(`[summary-engine^="tab-${tabNumber}-message-"]`);
         
         messages.forEach(message => {
-            const dots = message.querySelector('.summary-engine_message-dots');
-            const text = message.querySelector('.summary-engine_company-message-text');
+            const dots = message.querySelector('[summary-engine="dots"]');
+            const text = message.querySelector('[summary-engine="message-content"]');
             
             if (dots) dots.style.display = 'none';
             if (text) text.style.display = 'block';
@@ -180,8 +180,8 @@ class WebflowMessagesFlowWithQuestions {
         
         messages.forEach((message, index) => {
             console.log('WebflowMessagesFlowWithQuestions: Showing message', index + 1);
-            const dots = message.querySelector('.summary-engine_message-dots');
-            const text = message.querySelector('.summary-engine_company-message-text');
+            const dots = message.querySelector('[summary-engine="dots"]');
+            const text = message.querySelector('[summary-engine="message-content"]');
             
             if (dots) dots.style.display = 'none';
             if (text) text.style.display = 'block';
@@ -200,8 +200,8 @@ class WebflowMessagesFlowWithQuestions {
         console.log('WebflowMessagesFlowWithQuestions: Hiding messages:', messages.length);
         messages.forEach((message, index) => {
             console.log('WebflowMessagesFlowWithQuestions: Hiding message', index + 1);
-            const dots = message.querySelector('.summary-engine_message-dots');
-            const text = message.querySelector('.summary-engine_company-message-text');
+            const dots = message.querySelector('[summary-engine="dots"]');
+            const text = message.querySelector('[summary-engine="message-content"]');
             
             if (dots) {
                 dots.style.display = 'flex';
