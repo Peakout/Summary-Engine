@@ -98,6 +98,12 @@ class WebflowWindow {
         this.setSessionData('summary_used', true);
         this.setSessionData(`summary_opened_${this.getCaseStudyId()}`, true);
         
+        // If modal is visible, close it since user opened window directly
+        if (window.webflowModal && window.webflowModal.isModalVisible()) {
+            console.log('WebflowWindow: Closing modal since user opened window directly');
+            window.webflowModal.dismissModal();
+        }
+        
         // Show the window
         this.window.style.display = 'block';
         
