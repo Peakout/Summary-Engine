@@ -133,6 +133,9 @@ class WebflowMessagesFlowWithQuestions {
             this.stopAllAnimations();
         }
         
+        // Add current tab to animating set
+        this.animatingTabs.add(tabNumber);
+        
         const tabPane = this.tabsContainer.querySelector(`[summary-engine="tab-${tabNumber}"]`);
         if (!tabPane) {
             console.warn(`WebflowMessagesFlowWithQuestions: Tab ${tabNumber} not found`);
@@ -229,14 +232,29 @@ class WebflowMessagesFlowWithQuestions {
     // Show message with dots animation flow
     showMessageWithFlow(tabPane, messages, messageIndex, tabNumber) {
         console.log('🔍 [DEBUG] showMessageWithFlow called with tabNumber:', tabNumber, 'messageIndex:', messageIndex, 'messages.length:', messages.length);
-        if (messageIndex >= messages.length) {
-            // All messages shown, now show questions
-            console.log('🔍 [DEBUG] All messages shown, calling showQuestions for tabNumber:', tabNumber);
+        
+        // Safety check to prevent infinite recursion
+        if (messageIndex >= messages.length || messageIndex < 0) {
+            console.log('🔍 [DEBUG] All messages shown or invalid index, calling showQuestions for tabNumber:', tabNumber);
             this.showQuestions(tabPane, tabNumber);
             return;
         }
         
+        // Safety check for empty messages array
+        if (messages.length === 0) {
+            console.log('🔍 [DEBUG] No messages found, ending flow');
+            this.animatingTabs.delete(tabNumber);
+            return;
+        }
+        
         const currentMessage = messages[messageIndex];
+        
+        // Safety check for valid message element
+        if (!currentMessage) {
+            console.log('🔍 [DEBUG] Invalid message element at index:', messageIndex);
+            this.showQuestions(tabPane, tabNumber);
+            return;
+        }
         
         // Show dots animation first
         this.showDotsAnimation(currentMessage, () => {
